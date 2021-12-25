@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<RootNamespace>E_poles.services</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+		<PackageReference Include="Dapper.Contrib" Version="2.0.35" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\E-poles.Dal\E-poles.Dal.csproj" />
+	</ItemGroup>
+</Project>

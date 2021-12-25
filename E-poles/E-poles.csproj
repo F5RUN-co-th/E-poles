@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<RootNamespace>E_poles</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Areas\admin\Models\" />
+		<Folder Include="Data\" />
+		<Folder Include="Filters\" />
+		<Folder Include="Views\Account\" />
+		<Folder Include="wwwroot\css\admin\" />
+		<Folder Include="wwwroot\css\openlayers\" />
+		<Folder Include="wwwroot\js\admin\" />
+		<Folder Include="wwwroot\lib\openlayers\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\E-poles.Dal\E-poles.Dal.csproj" />
+		<ProjectReference Include="..\E-poles.Services\E-poles.Services.csproj" />
+	</ItemGroup>
+
+</Project>
