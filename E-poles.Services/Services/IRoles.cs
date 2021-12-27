@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using E_poles.Dal;
+using System.Threading.Tasks;
 
 namespace E_poles.Services
 {
@@ -6,6 +7,6 @@ namespace E_poles.Services
     {
         Task GenerateRolesFromPagesAsync();
 
-        Task AddToRoles(int applicationUserId);
+        Task AddToRoles(int applicationUserId, RoleEnum roleType);
     }
 }

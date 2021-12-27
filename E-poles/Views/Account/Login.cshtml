@@ -2,70 +2,213 @@
 @using System.Linq
 @using Microsoft.AspNetCore.Http
 @model LoginViewModel
-
+@{
+    Layout = null;
+}
 @{
     ViewData["Title"] = "Log in";
 }
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Login Boxed - Electric Pole</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="msapplication-tap-highlight" content="no">
+    <link href="~/css/admin/main.v2.css" rel="stylesheet" />
+</head>
 
-<div class="login-box">
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow">
+        <div class="app-container">
+            <div class="h-100">
+                <div class="h-100 no-gutters row">
+                    <div class="d-none d-lg-block col-lg-4">
+                        <div class="slider-light">
+                            <div class="slick-slider">
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-plum-plate" tabindex="-1">
+                                        <div class="slide-img-bg" style="background-image: url('../../../css/admin/assets/images/originals/poles0.jpg'); "></div>
+                                        <div class="slider-content">
+                                            <h3>Title 1</h3>
+                                            <p>
+                                                coming soon..
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-premium-dark" tabindex="-1">
+                                        <div class="slide-img-bg" style="background-image: url('../../../css/admin/assets/images/originals/poles1.jpg'); "></div>
+                                        <div class="slider-content">
+                                            <h3>Title 2</h3>
+                                            <p>
+                                                coming soon..
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="position-relative h-100 d-flex justify-content-center align-items-center bg-sunny-morning" tabindex="-1">
+                                        <div class="slide-img-bg" style="background-image: url('../../../css/admin/assets/images/originals/poles2.jpg'); "></div>
+                                        <div class="slider-content">
+                                            <h3>Title 3</h3>
+                                            <p>coming soon..</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-100 d-flex bg-white justify-content-center align-items-center col-md-12 col-lg-8">
+                        <div class="mx-auto app-login-box col-sm-12 col-md-10 col-lg-9">
+                            <div class="app-logo"></div>
+                            <h4 class="mb-0">
+                                <span class="d-block">Welcome back,</span>
+                                <span>Please sign in to your account.</span>
+                            </h4>
+                            <div class="divider row"></div>
+                            <div>
+                                <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                                    <div class="form-row">
+                                        <div class="col-md-6">
+                                            <div class="position-relative form-group has-feedback">
+                                                <label asp-for="UserName"></label>
+                                                <input asp-for="UserName" class="form-control" />
+                                                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="position-relative form-group has-feedback">
+                                                <label asp-for="Password"></label>
+                                                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="position-relative form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="RememberMe">
+                                        <label for="exampleCheck" class="form-check-label">@Html.DisplayNameFor(m => m.RememberMe)</label>
+                                    </div>
+                                    <div class="divider row"></div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="ml-auto">
+                                            @*<a href="javascript:void(0);" class="btn-lg btn btn-link">Recover Password</a>*@
+                                            <button class="btn btn-primary btn-lg">Login</button>
+                                        </div>
+                                    </div>
+                                </form>
 
-    <!-- /.login-logo -->
-    <div class="login-box-body">
-        <div class="login-logo">
-            <a href="/"><b>name</b>logo</a>
-        </div>
-        <p class="login-box-msg">Sign in to start your session</p>
-        <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-            <div class="form-group has-feedback">
-                <label asp-for="UserName"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group has-feedback">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="row">
-                <div class="col-xs-2"></div>
-                <div class="col-xs-6">
-                    <div class="checkbox icheck">
-                        <label>
-                            <input type="checkbox" asp-for="RememberMe">  @Html.DisplayNameFor(m => m.RememberMe)
-                        </label>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- /.col -->
-                <div class="col-xs-4">
-                    <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
-                </div>
-                <!-- /.col -->
             </div>
-            @*<div class="social-auth-links text-center hidden">
-                    <p>- OR -</p>
-                    <a href="#" class="btn btn-block btn-social btn-facebook btn-flat">
-                        <i class="fa fa-facebook"></i> Sign in using
-                        Facebook
-                    </a>
-                    <a href="#" class="btn btn-block btn-social btn-google btn-flat">
-                        <i class="fa fa-google-plus"></i> Sign in using
-                        Google+
-                    </a>
-                </div>*@
-            <!-- /.social-auth-links -->
-            <a asp-action="ForgotPassword" class="hidden">I forgot my password</a><br>
-            <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" class="text-center hidden">Register a new membership</a>
-            <p class="pull-right">
-
-            </p>
-        </form>
-
-
+        </div>
     </div>
-    <!-- /.login-box-body -->
-</div>
+    @*<div class="app-container app-theme-white body-tabs-shadow">
+            <div class="app-container">
+                <div class="h-100 bg-plum-plate bg-animation">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="mx-auto app-login-box col-md-8">
+                            <div class="app-logo-inverse mx-auto mb-3"></div>
+                            <div class="modal-dialog w-100 mx-auto">
+                                <div class="modal-content">
+                                    <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                                        <div class="modal-body">
+                                            <div class="h5 modal-title text-center">
+                                                <h4 class="mt-2">
+                                                    <div>Welcome back,</div>
+                                                    <span>Please sign in to your account below.</span>
+                                                </h4>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="col-md-12">
+                                                    <div class="position-relative form-group has-feedback">
+                                                        <label asp-for="UserName"></label>
+                                                        <input asp-for="UserName" class="form-control" />
+                                                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="position-relative form-group has-feedback">
+                                                        <label asp-for="Password"></label>
+                                                        <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                                                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="position-relative form-check">
+                                                <input class="form-check-input" type="checkbox" asp-for="RememberMe">  @Html.DisplayNameFor(m => m.RememberMe)
+
+                                            </div>
+
+                                            <div class="divider"></div>
+                                        </div>
+                                        <div class="modal-footer clearfix">
+                                            <div class="float-left">
+                                            </div>
+                                            <div class="float-right">
+                                                <button class="btn btn-primary btn-lg">Sign In</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="text-center text-white opacity-8 mt-3"> &copy; 2021-2022 Electric Pole, All rights reserved.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <script type="text/javascript" src="~/js/admin/main.v2.js"></script>
+</body>
+</html>
+@*<div class="login-box">
+        <div class="login-box-body">
+            <div class="login-logo">
+                <a href="/"><b>name</b>logo</a>
+            </div>
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <div class="form-group has-feedback">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2"></div>
+                    <div class="col-xs-6">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox" asp-for="RememberMe">  @Html.DisplayNameFor(m => m.RememberMe)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>*@
+
 @section Scripts{
     @await Html.PartialAsync("_ValidationScriptsPartial")
     @*<script>

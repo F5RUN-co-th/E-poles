@@ -82,7 +82,7 @@ namespace E_poles.Services
                     await _context.UserProfile.AddAsync(profile);
                     await _context.SaveChangesAsync();
 
-                    await _roles.AddToRoles(superAdmin.Id);
+                    await _roles.AddToRoles(superAdmin.Id, RoleEnum.Administrator);
                 }
             }
             catch (Exception)

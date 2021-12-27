@@ -19,7 +19,6 @@
 		<Folder Include="Data\" />
 		<Folder Include="Filters\" />
 		<Folder Include="Views\Account\" />
-		<Folder Include="wwwroot\css\admin\" />
 		<Folder Include="wwwroot\css\openlayers\" />
 		<Folder Include="wwwroot\js\admin\" />
 		<Folder Include="wwwroot\lib\openlayers\" />
