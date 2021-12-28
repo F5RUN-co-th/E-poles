@@ -7,7 +7,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var EPoles = function () {
     function EPoles() {
         _classCallCheck(this, EPoles);
-        this.Loading = $("#loadingDiv");
         this.imgsrc = "http://cdn.mapmarker.io/api/v1/pin?text=P&size=50&hoffset=1";
         this.popupInput = document.getElementById('popup');
         this.popupContent = document.getElementById('popup-content');

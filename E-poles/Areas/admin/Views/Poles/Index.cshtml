@@ -34,3 +34,14 @@
     This dashboard example was created using only the available elements and components, no additional SCSS was
     written!
 </div>
+
+@section Scripts{
+    <script src="~/js/e-poles.js" asp-append-version="true"></script>
+    <script>
+        var _form = new EPoles();
+        $(document).ready(function () {
+            _form.getUrl = '@Url.Action("GetAllPoles")';
+            _form.init();
+        });
+    </script>
+}

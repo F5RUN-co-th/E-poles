@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using E_poles.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_poles.Areas.admin.Controllers
@@ -7,5 +8,6 @@ namespace E_poles.Areas.admin.Controllers
     [Authorize]
     public class AdminBaseController : Controller
     {
+        
     }
 }

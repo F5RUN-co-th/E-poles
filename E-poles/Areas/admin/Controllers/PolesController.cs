@@ -1,12 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using E_poles.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace E_poles.Areas.admin.Controllers
 {
     public class PolesController : AdminBaseController
     {
-        public IActionResult Index()
+        IEpoleService _epoleService;
+        public PolesController(IEpoleService epoleService)
         {
-            return View();
+            _epoleService = epoleService;
         }
+
+        public IActionResult Index() => View();
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPoles()
+        {
+            var test = await _epoleService.GetAll();
+            return Ok();
+        }
+
     }
 }
