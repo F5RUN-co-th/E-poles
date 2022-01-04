@@ -15,11 +15,7 @@ namespace E_poles.Areas.admin.Controllers
         public IActionResult Index() => View();
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPoles()
-        {
-            var test = await _epoleService.GetAll();
-            return Ok();
-        }
+        public async Task<IActionResult> GetAllPoles() => Ok(await _epoleService.GetAll());
 
     }
 }

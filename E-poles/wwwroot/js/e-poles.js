@@ -16,13 +16,19 @@ var EPoles = function () {
         key: 'init',
         value: function init() {
             var me = this;
+           
             this.createMap();
+
+            
         }
     },
     {
         key: 'createMap',
         value: function createMap() {
             var me = this;
+            if ($("#map.mapboxgl-map").length > 0) {
+                $("#map").removeClass("mapboxgl-map").empty();
+            }
             fetch(this.getUrl)
                 .then(response => response.json())
                 .then(data => me.initiMap(data))
@@ -34,11 +40,29 @@ var EPoles = function () {
         value: function initiMap(_data) {
             var me = this;
             let markers = _data;
+
             var map = new ol.Map({
                 target: 'map',
                 layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.OSM()
+                    new ol.layer.Group({
+                        title: 'ประเภทแผนที่',
+                        layers: [
+                            new ol.layer.Tile({
+                                title: 'ค่าเริ่มต้น',
+                                type: 'base',
+                                visible: true,
+                                source: new ol.source.OSM()
+                            }),
+                            new ol.layer.Tile({
+                                title: 'ดาวเทียม',
+                                type: 'base',
+                                visible: false,
+                                source: new ol.source.BingMaps({
+                                    key: "AiXsKpaFNMtLgALR6-1EzlzLDeN0jTA2mymenjZlaVu6RK-C6gASJL-YK5cc16Nj",
+                                    imagerySet: "AerialWithLabelsOnDemand",
+                                })
+                            })
+                        ]
                     })
                 ],
                 view: new ol.View({
@@ -48,6 +72,7 @@ var EPoles = function () {
                     maxZoom: 20,
                 })
             });
+
             var features = [];
             for (var i = 0; i < markers.length; i++) {
                 var item = markers[i];
@@ -91,6 +116,12 @@ var EPoles = function () {
                 //stopEvent: false,
             });
             map.addOverlay(overlay);
+
+            var layerSwitcher = new ol.control.LayerSwitcher({
+                tipLabel: 'Légende', // Optional label for button
+                groupSelectStyle: 'none' // Can be 'children' [default], 'group' or 'none'
+            });
+            map.addControl(layerSwitcher);
 
             //display the pop with on mouse over event
             map.on('pointermove', function (event) {
