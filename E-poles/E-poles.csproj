@@ -25,7 +25,6 @@
 		<Folder Include="Data\" />
 		<Folder Include="Filters\" />
 		<Folder Include="Views\Account\" />
-		<Folder Include="wwwroot\js\admin\" />
 		<Folder Include="wwwroot\lib\openlayers\" />
 	</ItemGroup>
 

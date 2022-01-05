@@ -35,6 +35,9 @@ var EPoles = function () {
         value: function initiMap(_data) {
             var me = this;
             let markers = _data;
+            if ($("#map.mapboxgl-map").length > 0) {
+                $("#map").removeClass("mapboxgl-map").empty();
+            }
             var map = new ol.Map({
                 target: 'map',
                 layers: [
@@ -133,6 +136,35 @@ var EPoles = function () {
                 } else {
                     overlay.setPosition(undefined);
                 }
+            });
+
+            // display popup on click
+            map.on('click', function (evt) {
+                const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+                    return feature;
+                });
+                if (feature) {
+                    popup.setPosition(evt.coordinate);
+                    $(element).popover('dispose');
+                    $(element).popover({
+                        placement: 'top',
+                        html: true,
+                        content: feature.get('name'),
+                    });
+                    $(element).popover('show');
+                } else {
+                    $(element).popover('dispose');
+                }
+            });
+            // change mouse cursor when over marker
+            map.on('pointermove', function (e) {
+                const pixel = map.getEventPixel(e.originalEvent);
+                const hit = map.hasFeatureAtPixel(pixel);
+                map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+            });
+            // Close the popup when the map is moved
+            map.on('movestart', function () {
+                $(element).popover('dispose');
             });
         }
     }
