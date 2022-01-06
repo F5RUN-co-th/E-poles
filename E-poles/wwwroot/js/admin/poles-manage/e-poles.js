@@ -10,13 +10,17 @@ var EPoles = function () {
         this.imgsrc = "http://cdn.mapmarker.io/api/v1/pin?text=P&size=50&hoffset=1";
         this.popupInput = document.getElementById('popup');
         this.popupContent = document.getElementById('popup-content');
+
+        this.popupInputAdd = document.getElementById('popup2');
+        this.popupContentAdd = document.getElementById('popup-content2');
+        this.popupCloserAdd = document.getElementById('popup-closer');
+
     }
 
     _createClass(EPoles, [{
         key: 'init',
         value: function init() {
             var me = this;
-
             this.createMap();
         }
     },
@@ -35,9 +39,20 @@ var EPoles = function () {
         value: function initiMap(_data) {
             var me = this;
             let markers = _data;
+            var draw;
             if ($("#map.mapboxgl-map").length > 0) {
                 $("#map").removeClass("mapboxgl-map").empty();
             }
+
+            var button = document.createElement('button');
+            button.innerHTML = '<i class="fa fa-map-pin"></i>';
+
+
+            var element = document.createElement('div');
+            element.className = 'rotate-north ol-unselectable ol-control';
+            element.appendChild(button);
+
+
             var map = new ol.Map({
                 target: 'map',
                 layers: [
@@ -62,6 +77,13 @@ var EPoles = function () {
                         ]
                     })
                 ],
+                controls: ol.control.defaults({
+                    attribution: false
+                }).extend([
+                    new ol.control.Control({
+                        element: element
+                    })
+                ]),
                 view: new ol.View({
                     center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
                     zoom: 6,
@@ -114,6 +136,29 @@ var EPoles = function () {
             });
             map.addOverlay(overlay);
 
+            var handleNewPole = function (e) {
+                map.removeInteraction(draw);
+                draw = new ol.interaction.Draw({
+                    source: vectorSource,
+                    type: "Point",
+                });
+                map.addInteraction(draw);
+            };
+            button.addEventListener('click', handleNewPole, false);
+
+
+            var container2 = me.popupInputAdd;
+            var content2 = me.popupContentAdd;
+            var overlay2 = new ol.Overlay({
+                element: container2,
+                autoPan: {
+                    animation: {
+                        duration: 250,
+                    },
+                },
+            });
+            map.addOverlay(overlay2);
+
             var layerSwitcher = new ol.control.LayerSwitcher({
                 tipLabel: 'Légende', // Optional label for button
                 groupSelectStyle: 'none' // Can be 'children' [default], 'group' or 'none'
@@ -137,7 +182,7 @@ var EPoles = function () {
                     overlay.setPosition(undefined);
                 }
             });
-
+            /*
             // display popup on click
             map.on('click', function (evt) {
                 const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
@@ -166,6 +211,7 @@ var EPoles = function () {
             map.on('movestart', function () {
                 $(element).popover('dispose');
             });
+            */
         }
     }
     ]);

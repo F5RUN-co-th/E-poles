@@ -59,6 +59,7 @@ var EPoles = function () {
                         ]
                     })
                 ],
+                controls: new ol.control.defaults({ attribution: false }),
                 view: new ol.View({
                     center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
                     zoom: 6,
