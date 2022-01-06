@@ -13,6 +13,17 @@
     .ol-touch .rotate-north {
         top: 80px;
     }
+
+    .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+    }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
 </style>
 <div class="app-page-title">
     <div class="page-title-wrapper">
@@ -49,13 +60,6 @@
                         <div id="popup-content2"></div>
                     </div>
                 </div>
-                <select class="form-control mr-2 mb-2 mt-2" id="type">
-                    <option value="Point">Point</option>
-                    <option value="LineString">LineString</option>
-                    <option value="Polygon">Polygon</option>
-                    <option value="Circle">Circle</option>
-                    <option value="None">None</option>
-                </select>
             </div>
         </div>
     </div>
@@ -178,7 +182,7 @@
                                     <div class="widget-content-wrapper">
                                         <div class="widget-content-left mr-3">
                                             <div class="widget-content-left">
-                                                <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
+
                                             </div>
                                         </div>
                                         <div class="widget-content-left flex2">
@@ -206,7 +210,6 @@
                                     <div class="widget-content-wrapper">
                                         <div class="widget-content-left mr-3">
                                             <div class="widget-content-left">
-                                                <img width="40" class="rounded-circle" src="assets/images/avatars/3.jpg" alt="">
                                             </div>
                                         </div>
                                         <div class="widget-content-left flex2">
@@ -234,7 +237,6 @@
                                     <div class="widget-content-wrapper">
                                         <div class="widget-content-left mr-3">
                                             <div class="widget-content-left">
-                                                <img width="40" class="rounded-circle" src="assets/images/avatars/2.jpg" alt="">
                                             </div>
                                         </div>
                                         <div class="widget-content-left flex2">
@@ -264,7 +266,6 @@
                                     <div class="widget-content-wrapper">
                                         <div class="widget-content-left mr-3">
                                             <div class="widget-content-left">
-                                                <img width="40" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
                                             </div>
                                         </div>
                                         <div class="widget-content-left flex2">

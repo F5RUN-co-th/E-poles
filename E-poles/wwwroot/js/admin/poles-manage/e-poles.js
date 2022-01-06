@@ -47,11 +47,9 @@ var EPoles = function () {
             var button = document.createElement('button');
             button.innerHTML = '<i class="fa fa-map-pin"></i>';
 
-
             var element = document.createElement('div');
             element.className = 'rotate-north ol-unselectable ol-control';
             element.appendChild(button);
-
 
             var map = new ol.Map({
                 target: 'map',
@@ -77,13 +75,7 @@ var EPoles = function () {
                         ]
                     })
                 ],
-                controls: ol.control.defaults({
-                    attribution: false
-                }).extend([
-                    new ol.control.Control({
-                        element: element
-                    })
-                ]),
+                controls: ol.control.defaults({ attribution: false }).extend([new ol.control.Control({ element: element })]),
                 view: new ol.View({
                     center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
                     zoom: 6,
@@ -115,12 +107,8 @@ var EPoles = function () {
                 iconFeature.setStyle(iconStyle);
                 features.push(iconFeature);
             }
-            var vectorSource = new ol.source.Vector({
-                features: features
-            });
-            var vectorLayer = new ol.layer.Vector({
-                source: vectorSource
-            });
+            var vectorSource = new ol.source.Vector({ features: features });
+            var vectorLayer = new ol.layer.Vector({ source: vectorSource });
             map.addLayer(vectorLayer);
 
             var container = me.popupInput;
@@ -136,17 +124,6 @@ var EPoles = function () {
             });
             map.addOverlay(overlay);
 
-            var handleNewPole = function (e) {
-                map.removeInteraction(draw);
-                draw = new ol.interaction.Draw({
-                    source: vectorSource,
-                    type: "Point",
-                });
-                map.addInteraction(draw);
-            };
-            button.addEventListener('click', handleNewPole, false);
-
-
             var container2 = me.popupInputAdd;
             var content2 = me.popupContentAdd;
             var overlay2 = new ol.Overlay({
@@ -158,6 +135,44 @@ var EPoles = function () {
                 },
             });
             map.addOverlay(overlay2);
+            var handleNewPole = function (e) {
+                var Msource = new ol.source.Vector();
+                var markLayer = new ol.layer.Vector({
+                    source: Msource,
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            opacity: 0.95,
+                            src: "http://www.macfh.co.uk/Resources/Images/RGB00FF00.png"
+                        })
+                    })
+                });
+                var mark;
+                mark = new ol.interaction.Draw({
+                    source: Msource,
+                    type: "Point"
+                });
+                map.addInteraction(mark);
+                me.popupCloserAdd.onclick = function () {
+                    overlay2.setPosition(undefined);
+                    me.popupCloserAdd.blur();
+                    return false;
+                };
+                markLayer.on("change", function () {
+                    /*
+                     const coordinate = mark._v;
+                    content2.innerHTML = `${coordinate.join(', ')}`;
+                    overlay2.setPosition(coordinate);
+                     */
+                    map.removeInteraction(mark);
+                });
+                mark.on('drawend', function (evt) {
+                    const coordinate = mark._v;
+                    var feature = evt.feature;
+                    content2.innerHTML = `${ol.proj.toLonLat(feature.getGeometry().getCoordinates()).join(', ')}`;
+                    overlay2.setPosition(coordinate);
+                });
+            };
+            button.addEventListener('click', handleNewPole, false);
 
             var layerSwitcher = new ol.control.LayerSwitcher({
                 tipLabel: 'Légende', // Optional label for button
