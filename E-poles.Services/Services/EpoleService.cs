@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using E_poles.Dal;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -14,6 +15,21 @@ namespace E_poles.Services
         public EpoleService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Poles> CreateAsync(Poles model)
+        {
+            //long objId = 0;
+            //using (var connection = _context.Database.GetDbConnection())
+            //{
+            //    objId = await connection.InsertAsync(model);
+            //}
+
+            //return await _context.Database.GetDbConnection().GetAsync<Poles>(objId);
+            var data = await _context.Poles.AddAsync(model);
+            await _context.SaveChangesAsync();
+
+            return data.Entity;
         }
 
         public async Task<IEnumerable<Poles>> GetAll()

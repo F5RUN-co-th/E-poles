@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Dashboards";
 }
-
+@model DashboardViewModel
 <div class="app-page-title">
     <div class="page-title-wrapper">
         <div class="page-title-heading">
@@ -22,11 +22,68 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="main-card mb-3 card">
-            <div class="card-body">
-                Hello Admin
+<div>
+    @*<div class="row">
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title">Basic</h5>
+                        <h3><span class="count-up-wrapper">$710</span></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title">Numbers</h5>
+                        <div class="text-center">
+                            <h3>
+                                <span class="count-up-wrapper-4">710 </span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3 widget-chart">
+                <div class="icon-wrapper rounded-circle">
+                    <div class="icon-wrapper-bg bg-dark"></div>
+                    <i class="lnr-map-marker text-primary"></i>
+                </div>
+                <div class="widget-numbers">@Model.TotalPole</div>
+                <div class="widget-subheading">Total Pole</div>
+                <div class="widget-description text-success">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3 widget-chart">
+                <div class="icon-wrapper rounded-circle">
+                    <div class="icon-wrapper-bg bg-success"></div>
+                    <i class="lnr-user text-success"></i>
+                </div>
+                <div class="widget-numbers">@Model.TotalAdmin </div>
+
+                <div class="widget-subheading">Total Admin</div>
+                <div class="widget-description text-warning">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3 widget-chart">
+                <div class="icon-wrapper rounded-circle">
+                    <div class="icon-wrapper-bg bg-secondary"></div>
+                    <i class="lnr-users text-danger"></i>
+                </div>
+                <div class="widget-numbers">@Model.TotalUser</div>
+                <div class="widget-subheading">Total User</div>
+                <div class="widget-description text-primary">
+
+                </div>
             </div>
         </div>
     </div>

@@ -15,6 +15,10 @@ var EPoles = function () {
         this.popupContentAdd = document.getElementById('popup-content2');
         this.popupCloserAdd = document.getElementById('popup-closer');
 
+        this.txtLatitude = $("#Latitude");
+        this.txtLongitude = $("#Longitude");
+        this.txtName = $("#Name");
+
     }
 
     _createClass(EPoles, [{
@@ -39,7 +43,7 @@ var EPoles = function () {
         value: function initiMap(_data) {
             var me = this;
             let markers = _data;
-            var draw;
+
             if ($("#map.mapboxgl-map").length > 0) {
                 $("#map").removeClass("mapboxgl-map").empty();
             }
@@ -135,6 +139,7 @@ var EPoles = function () {
                 },
             });
             map.addOverlay(overlay2);
+
             var handleNewPole = function (e) {
                 var Msource = new ol.source.Vector();
                 var markLayer = new ol.layer.Vector({
@@ -152,9 +157,13 @@ var EPoles = function () {
                     type: "Point"
                 });
                 map.addInteraction(mark);
+
                 me.popupCloserAdd.onclick = function () {
                     overlay2.setPosition(undefined);
                     me.popupCloserAdd.blur();
+                    me.txtLatitude.val("");
+                    me.txtLongitude.val("");
+                    me.txtName.val("");
                     return false;
                 };
                 markLayer.on("change", function () {
@@ -169,6 +178,11 @@ var EPoles = function () {
                     const coordinate = mark._v;
                     var feature = evt.feature;
                     content2.innerHTML = `${ol.proj.toLonLat(feature.getGeometry().getCoordinates()).join(', ')}`;
+                    me.popupCloserAdd.blur();
+
+                    me.txtLatitude.val(ol.proj.toLonLat(feature.getGeometry().getCoordinates())[1]);
+                    me.txtLongitude.val(ol.proj.toLonLat(feature.getGeometry().getCoordinates())[0]);
+
                     overlay2.setPosition(coordinate);
                 });
             };

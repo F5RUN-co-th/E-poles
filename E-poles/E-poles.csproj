@@ -6,13 +6,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Areas\admin\Models\**" />
-	  <Content Remove="Areas\admin\Models\**" />
-	  <EmbeddedResource Remove="Areas\admin\Models\**" />
-	  <None Remove="Areas\admin\Models\**" />
+	  <Compile Remove="Filters\**" />
+	  <Content Remove="Filters\**" />
+	  <EmbeddedResource Remove="Filters\**" />
+	  <None Remove="Filters\**" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.1.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.12" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.12" />
@@ -22,8 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Data\" />
-		<Folder Include="Filters\" />
 		<Folder Include="Views\Account\" />
 		<Folder Include="wwwroot\lib\openlayers\" />
 	</ItemGroup>

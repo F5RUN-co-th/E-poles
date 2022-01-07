@@ -1,4 +1,6 @@
+using AutoMapper;
 using E_poles.Dal;
+using E_poles.Data;
 using E_poles.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -65,7 +67,11 @@ namespace E_poles
 
             services.AddTransient<IRoles, Roles>();
             services.AddTransient<IFunctional, Functional>();
+
+            services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IEpoleService, EpoleService>();
+
+            services.AddAutoMapper(typeof(MappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

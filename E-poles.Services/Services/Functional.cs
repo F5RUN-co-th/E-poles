@@ -38,17 +38,17 @@ namespace E_poles.Services
         {
             try
             {
-                if (!_context.Poles.Any())
-                {
+                //if (!_context.Poles.Any())
+                //{
 
-                    List<Poles> poles = new List<Poles>() {
-                    new Poles{ Name = "number 1",Latitude= 14.106743,Longitude=100.396078},
-                    new Poles{ Name = "number 2",Latitude= 13.723910,Longitude=102.322485},
-                    new Poles{ Name = "number 3",Latitude= 12.862147,Longitude=99.895083},
-                };
-                    await _context.Poles.AddRangeAsync(poles);
-                    await _context.SaveChangesAsync();
-                }
+                //    List<Poles> poles = new List<Poles>() {
+                //    new Poles{ Name = "number 1",Latitude= 14.106743,Longitude=100.396078},
+                //    new Poles{ Name = "number 2",Latitude= 13.723910,Longitude=102.322485},
+                //    new Poles{ Name = "number 3",Latitude= 12.862147,Longitude=99.895083},
+                //};
+                //    await _context.Poles.AddRangeAsync(poles);
+                //    await _context.SaveChangesAsync();
+                //}
             }
             catch (Exception e)
             {

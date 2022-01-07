@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 
 namespace E_poles.Services
 {
-    public interface IEpoleService
+    public interface IDashboardService
     {
-        Task<IEnumerable<Poles>> GetAll();
-
-        Task<Poles> CreateAsync(Poles model);
+        Task<object> GetAllInfomation();
     }
 }
