@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<RootNamespace>E_poles</RootNamespace>
+		<UserSecretsId>fa651419-4da2-410a-9fea-7947022f55c4</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
