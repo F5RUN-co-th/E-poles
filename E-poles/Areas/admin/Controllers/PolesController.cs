@@ -40,7 +40,8 @@ namespace E_poles.Areas.admin.Controllers
                         //    Message = "Sucess",
                         //    StatusCode = 200
                         //};
-                        return RedirectToAction(nameof(Create));
+                        //return RedirectToAction(nameof(Create));
+                        return Ok(result);
                     }
                     else
                     {

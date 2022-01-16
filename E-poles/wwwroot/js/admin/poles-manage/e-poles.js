@@ -7,7 +7,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var EPoles = function () {
     function EPoles() {
         _classCallCheck(this, EPoles);
-        this.imgsrc = "http://cdn.mapmarker.io/api/v1/pin?text=P&size=50&hoffset=1";
+        //this.imgsrc = "http://cdn.mapmarker.io/api/v1/pin?text=P&size=50&hoffset=1";
         this.popupInput = document.getElementById('popup');
         this.popupContent = document.getElementById('popup-content');
 
@@ -18,7 +18,7 @@ var EPoles = function () {
         this.txtLatitude = $("#Latitude");
         this.txtLongitude = $("#Longitude");
         this.txtName = $("#Name");
-
+        this.btnSubmit = $("#btnsubmit");
     }
 
     _createClass(EPoles, [{
@@ -26,6 +26,23 @@ var EPoles = function () {
         value: function init() {
             var me = this;
             this.createMap();
+
+            this.btnSubmit.click(function () {
+                var _data = $('form').serialize();
+                $.ajax({
+                    url: me.createPoleUrl,
+                    type: "POST",
+                    data: _data,
+                    success: function success(s) {
+                        if (s) {
+
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("error")
+                    }
+                });
+            });
         }
     },
     {
@@ -55,7 +72,7 @@ var EPoles = function () {
             element.className = 'rotate-north ol-unselectable ol-control';
             element.appendChild(button);
 
-            var map = new ol.Map({
+            this.map = new ol.Map({
                 target: 'map',
                 layers: [
                     new ol.layer.Group({
@@ -84,7 +101,7 @@ var EPoles = function () {
                     center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
                     zoom: 6,
                     minZoom: 6,
-                    maxZoom: 20,
+                    maxZoom: 25,
                 })
             });
 
@@ -100,20 +117,20 @@ var EPoles = function () {
                     name: name,
                 });
 
-                var iconStyle = new ol.style.Style({
-                    image: new ol.style.Icon(({
-                        anchor: [0.5, 1],
-                        //scale: 0.4 // set the size of the img on the map
-                        src: me.imgsrc
-                    }))
-                });
+                //var iconStyle = new ol.style.Style({
+                //    image: new ol.style.Icon(({
+                //        anchor: [0.5, 1],
+                //        //scale: 0.4 // set the size of the img on the map
+                //        //src: me.imgsrc
+                //    }))
+                //});
 
-                iconFeature.setStyle(iconStyle);
+                //iconFeature.setStyle(iconStyle);
                 features.push(iconFeature);
             }
-            var vectorSource = new ol.source.Vector({ features: features });
-            var vectorLayer = new ol.layer.Vector({ source: vectorSource });
-            map.addLayer(vectorLayer);
+            this.vectorSource = new ol.source.Vector({ features: features });
+            this.vectorLayer = new ol.layer.Vector({ source: me.vectorSource });
+            me.map.addLayer(me.vectorLayer);
 
             var container = me.popupInput;
             var content = me.popupContent;
@@ -126,7 +143,7 @@ var EPoles = function () {
                 //positioning: 'bottom-center',
                 //stopEvent: false,
             });
-            map.addOverlay(overlay);
+            me.map.addOverlay(overlay);
 
             var container2 = me.popupInputAdd;
             var content2 = me.popupContentAdd;
@@ -138,7 +155,7 @@ var EPoles = function () {
                     },
                 },
             });
-            map.addOverlay(overlay2);
+            me.map.addOverlay(overlay2);
 
             var handleNewPole = function (e) {
                 var Msource = new ol.source.Vector();
@@ -156,7 +173,7 @@ var EPoles = function () {
                     source: Msource,
                     type: "Point"
                 });
-                map.addInteraction(mark);
+                me.map.addInteraction(mark);
 
                 me.popupCloserAdd.onclick = function () {
                     overlay2.setPosition(undefined);
@@ -172,7 +189,7 @@ var EPoles = function () {
                     content2.innerHTML = `${coordinate.join(', ')}`;
                     overlay2.setPosition(coordinate);
                      */
-                    map.removeInteraction(mark);
+                    me.map.removeInteraction(mark);
                 });
                 mark.on('drawend', function (evt) {
                     const coordinate = mark._v;
@@ -192,11 +209,11 @@ var EPoles = function () {
                 tipLabel: 'Légende', // Optional label for button
                 groupSelectStyle: 'none' // Can be 'children' [default], 'group' or 'none'
             });
-            map.addControl(layerSwitcher);
+            me.map.addControl(layerSwitcher);
 
             //display the pop with on mouse over event
-            map.on('pointermove', function (event) {
-                const features = map.getFeaturesAtPixel(event.pixel);
+            me.map.on('pointermove', function (event) {
+                const features = me.map.getFeaturesAtPixel(event.pixel);
                 if (features.length > 0) {
                     var coordinate = event.coordinate;
                     var pointName = features
