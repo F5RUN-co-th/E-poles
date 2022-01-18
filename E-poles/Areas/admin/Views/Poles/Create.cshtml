@@ -64,6 +64,10 @@
                         <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                         <div id="popup-content2"></div>
                     </div>
+                    <div id="popup3" class="ol-popup">
+                        <a href="#" id="popup-delete" ></a>
+                        <div id="popup-content3"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +114,7 @@
                                 </select>
                             </div>
                         </div>*@
-                    <button type="button" id="btnsubmit" class="mt-1 btn btn-primary">Submit</button>
+                    <button type="button" id="btnsubmit" class="mt-1 btn btn-primary">ตกลง</button>
                 </form>
             </div>
         </div>
@@ -122,12 +126,12 @@
     <script src="~/lib/openlayers/ol-layerswitcher.js"></script>
     <script src="~/js/admin/poles-manage/e-poles.js" asp-append-version="true"></script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
-<script>
+    <script>
         var _form = new EPoles();
         $(document).ready(function () {
             _form.getUrl = '@Url.Action("GetAllPoles")';
             _form.createPoleUrl = '@Url.Action("CreatePoles")';
             _form.init();
         });
-</script>
+    </script>
 }

@@ -41,7 +41,7 @@ namespace E_poles.Areas.admin.Controllers
                         //    StatusCode = 200
                         //};
                         //return RedirectToAction(nameof(Create));
-                        return Ok(result);
+                        return Ok(await _epoleService.GetAll());
                     }
                     else
                     {
