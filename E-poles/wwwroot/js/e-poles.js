@@ -7,9 +7,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var EPoles = function () {
     function EPoles() {
         _classCallCheck(this, EPoles);
-        this.imgsrc = "http://cdn.mapmarker.io/api/v1/pin?text=P&size=50&hoffset=1";
         this.popupInput = document.getElementById('popup');
         this.popupContent = document.getElementById('popup-content');
+
+        this.vectorLayer = null;
     }
 
     _createClass(EPoles, [{
@@ -31,11 +32,57 @@ var EPoles = function () {
         }
     },
     {
+        key: 'makeMarkers',
+        value: function makeMarkers(markers) {
+            var me = this;
+            var features = [];
+            for (var i = 0; i < markers.length; i++) {
+                var item = markers[i];
+                var longitude = item.longitude;
+                var latitude = item.latitude;
+                var name = item.name;
+                var iconFeature = new ol.Feature({
+                    geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
+                    type: 'Point',
+                    makerid: item.id,
+                    lat: latitude,
+                    long: longitude,
+                    name: name,
+                    desc: '<pre> <h6><b>' + name + '</b></h6 >' + 'Latitude : ' + latitude + '<br>Longitude: ' + longitude + '</pre>'
+                });
+                var iconStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        stroke: new ol.style.Stroke({
+                            //color: 'lime'
+                        }),
+                        fill: new ol.style.Fill({
+                            color: [0, 225, 0, 1]
+                        }),
+                    })
+                });
+                //var iconStyle = new ol.style.Style({
+                //    image: new ol.style.Icon(({
+                //        anchor: [0.5, 1],
+                //        //scale: 0.4 // set the size of the img on the map
+                //        //src: me.imgsrc
+                //    }))
+                //});
+                iconFeature.setStyle(iconStyle);
+                features.push(iconFeature);
+            }
+            var vectorSource = new ol.source.Vector({ features: features });
+            me.vectorLayer = new ol.layer.Vector({ source: vectorSource });
+            me.map.addLayer(me.vectorLayer);
+        }
+    },
+    {
         key: 'initiMap',
         value: function initiMap(_data) {
             var me = this;
             let markers = _data;
-            var map = new ol.Map({
+
+            this.map = new ol.Map({
                 target: 'map',
                 layers: [
                     new ol.layer.Group({
@@ -59,46 +106,17 @@ var EPoles = function () {
                         ]
                     })
                 ],
-                controls: new ol.control.defaults({ attribution: false }),
+                controls: ol.control.defaults({ attribution: false }),
                 view: new ol.View({
                     center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
                     zoom: 6,
                     minZoom: 6,
-                    maxZoom: 20,
+                    maxZoom: 25,
                 })
             });
 
-            var features = [];
-            for (var i = 0; i < markers.length; i++) {
-                var item = markers[i];
-                var longitude = item.longitude;
-                var latitude = item.latitude;
-                var name = item.name;
-
-                var iconFeature = new ol.Feature({
-                    geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
-                    name: name,
-                });
-
-                var iconStyle = new ol.style.Style({
-                    image: new ol.style.Icon(({
-                        anchor: [0.5, 1],
-                        //scale: 0.4 // set the size of the img on the map
-                        src: me.imgsrc
-                    }))
-                });
-
-                iconFeature.setStyle(iconStyle);
-                features.push(iconFeature);
-            }
-            var vectorSource = new ol.source.Vector({
-                features: features
-            });
-            var vectorLayer = new ol.layer.Vector({
-                source: vectorSource
-            });
-            map.addLayer(vectorLayer);
-
+            me.makeMarkers(_data);
+            
             var container = me.popupInput;
             var content = me.popupContent;
             var overlay = new ol.Overlay({
@@ -110,28 +128,22 @@ var EPoles = function () {
                 //positioning: 'bottom-center',
                 //stopEvent: false,
             });
-            map.addOverlay(overlay);
+            me.map.addOverlay(overlay);
 
             var layerSwitcher = new ol.control.LayerSwitcher({
-                tipLabel: 'Légende', // Optional label for button
+                tipLabel: 'Optional', // Optional label for button
                 groupSelectStyle: 'none' // Can be 'children' [default], 'group' or 'none'
             });
-            map.addControl(layerSwitcher);
+            me.map.addControl(layerSwitcher);
 
-            //display the pop with on mouse over event
-            map.on('pointermove', function (event) {
-                const features = map.getFeaturesAtPixel(event.pixel);
-                if (features.length > 0) {
-                    var coordinate = event.coordinate;
-                    var pointName = features
-                        .filter(feature => feature.getGeometry().getType() == 'Point')
-                        .map(feature => feature.get('name'))
-                    var longAndlat = features.
-                        filter(feature => feature.getGeometry().getType() == 'Point')
-                        .map(feature => `${ol.proj.toLonLat(feature.getGeometry().getCoordinates()).join(', ')}`)
-                    content.innerHTML = `<b>${pointName}</b><br>${longAndlat}`;
+            me.map.on('pointermove', function (event) {
+                var feature = me.map.forEachFeatureAtPixel(event.pixel, function (feat, layer) { return feat; });
+                if (feature && feature.get('type') == 'Point') {
+                    var coordinate = event.coordinate;    //default projection is EPSG:3857 you may want to use ol.proj.transform
+                    content.innerHTML = feature.get('desc');
                     overlay.setPosition(coordinate);
-                } else {
+                }
+                else {
                     overlay.setPosition(undefined);
                 }
             });

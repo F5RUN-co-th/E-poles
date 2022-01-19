@@ -7,7 +7,7 @@ namespace E_poles.Services
     public interface IEpoleService
     {
         Task<IEnumerable<Poles>> GetAll();
-
+        Task<bool> DeleteAsync(Poles model);
         Task<Poles> CreateAsync(Poles model);
     }
 }

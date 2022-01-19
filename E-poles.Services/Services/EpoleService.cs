@@ -32,6 +32,13 @@ namespace E_poles.Services
             return data.Entity;
         }
 
+        public async Task<bool> DeleteAsync(Poles model)
+        {
+            _context.Poles.Remove(model);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<Poles>> GetAll()
         {
             using (var connection = _context.Database.GetDbConnection())
