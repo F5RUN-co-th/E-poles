@@ -10,6 +10,12 @@
 	  <Compile Remove="Migrations\20211225085422_Initialize.Designer.cs" />
 	  <Compile Remove="Migrations\20211225105710_Initialize.cs" />
 	  <Compile Remove="Migrations\20211225105710_Initialize.Designer.cs" />
+	  <Compile Remove="Migrations\20211225105906_Initialize.cs" />
+	  <Compile Remove="Migrations\20211225105906_Initialize.Designer.cs" />
+	  <Compile Remove="Migrations\20220121091203_Initialize.cs" />
+	  <Compile Remove="Migrations\20220121091203_Initialize.Designer.cs" />
+	  <Compile Remove="Migrations\20220121093204_Initialize.cs" />
+	  <Compile Remove="Migrations\20220121093204_Initialize.Designer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -18,5 +24,9 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.12" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.12" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12" />		
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 </Project>

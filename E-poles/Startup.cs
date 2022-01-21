@@ -31,7 +31,7 @@ namespace E_poles
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     x => x.MigrationsAssembly("E-poles.Dal")));
-
+            //b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             services.AddIdentity<User, Role>(options =>
             {
                 // Password settings

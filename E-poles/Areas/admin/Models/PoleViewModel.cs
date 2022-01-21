@@ -12,10 +12,15 @@ namespace E_poles.Areas.admin.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public double Latitude { get; set; }
+        public decimal Latitude { get; set; }
         [Required]
-        public double Longitude { get; set; }
-        public string Zone { get; set; }
+        public decimal Longitude { get; set; }
+        [Required]
+        public string Area { get; set; }
+        [Required]
+        public string Street { get; set; }
+        public string Note { get; set; }
+        public string Description { get; set; }
         public bool Status { get; set; }
     }
 }

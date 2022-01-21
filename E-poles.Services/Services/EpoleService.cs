@@ -43,7 +43,7 @@ namespace E_poles.Services
         {
             using (var connection = _context.Database.GetDbConnection())
             {
-                var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Zone],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
+                var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
 
                 return poles;
             }

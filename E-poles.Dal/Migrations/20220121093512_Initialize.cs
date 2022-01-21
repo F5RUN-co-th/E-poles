@@ -14,9 +14,12 @@ namespace E_poles.Dal.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    Latitude = table.Column<double>(nullable: false),
-                    Longitude = table.Column<double>(nullable: false),
-                    Zone = table.Column<string>(nullable: true),
+                    Latitude = table.Column<decimal>(type: "decimal(18, 15)", nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(18, 15)", nullable: false),
+                    Area = table.Column<string>(nullable: true),
+                    Street = table.Column<string>(nullable: true),
+                    Note = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     Status = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

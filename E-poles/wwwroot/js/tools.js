@@ -121,7 +121,7 @@ $(document).ready(function () {
         $.extend($.fn.dataTable.defaults, {
             "lengthMenu": [10, 20, 50, 100],
             language: {
-                "lengthMenu": 'Showing <select>' +
+                "lengthMenu": 'Show <select class="custom-select custom-select-sm form-control form-control-sm">' +
                     '<option value="10">10</option>' +
                     '<option value="20">20</option>' +
                     '<option value="50">50</option>' +

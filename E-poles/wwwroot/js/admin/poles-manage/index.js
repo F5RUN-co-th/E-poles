@@ -8,35 +8,35 @@ var EPoles = function () {
     function EPoles() {
         _classCallCheck(this, EPoles);
         this.dtList = $('#gv_poleslist');
-        this.columns = null;
-        this.selectDt = [{
-            style: 'os',
-            selector: 'td:first-child'
-        }];
-        this.columnDefs = [
-            {
-                orderable: false,
-                className: 'select-checkbox',
-                targets: 0
-            }
-        ];
-        this.order = [[1, "desc"]];
-        this.dom = '<"top"i>rt<"table-footer"<"col-sm-6"f<"pull-left"<"#extra">>><"col-sm-6"<"pull-right"lp>>>';
+        this.order = [[1, "desc"]];//<'domInput'>
+        this.dom = "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'domInput dataTables_filter'>>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
         this.searching = false;
-        this.inputStartDate = $('.startDate');
-        this.inputEndDate = $('.endDate');
-        this.inputEffDate = $('.effDate');
         this.search = $('#searchForm');
         this.btnSearch = $('#btn_search');
     }
-
+    /*
+        l - length changing input control
+        f - filtering input
+        r - processing display element
+        t - The table!
+        i - Table information summary
+        p - pagination control
+     */
     _createClass(EPoles, [{
         key: 'init',
         value: function init() {
             var me = this;
-            $('#gv_poleslist').dataTable({
+
+            this.btnSearch.click(function () {
+
+                me.dt.ajax.reload(function (json) {
+                    // clearTimeout
+                    me.reloadDatatable();
+
+                });
             });
-            //this.createDatatable();
+
+            this.createDatatable();
         }
     },
     {
@@ -45,12 +45,14 @@ var EPoles = function () {
 
             var me = this;
             this.dt = this.dtList.DataTable({
-                "ordering": false,
+                "dom": me.dom,
                 "pageLength": 20,
-                "processing": true,
-                "serverSide": true,
-                "searching": me.searching,
-                "order": me.order,
+                "processing": true, // for show progress bar
+                "serverSide": true, // process server side
+                "filter": true, // this is for disable filter (search box)
+                //"order": me.order,
+                //"orderMulti": false, // for disable multiple column at once    
+                "searching": false,
                 "ajax": {
                     "url": me.getUrl,
                     "type": "POST",
@@ -60,12 +62,20 @@ var EPoles = function () {
                         return JSON.stringify(formValues);
                     }
                 },
+                "columnDefs": [{
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
                 "columns": [
-                    { "data": "id", "name": "ID", "autoWidth": true },
-                    { "data": "Name", "name": "Name", "autoWidth": true },
-                    { "data": "Latitude", "name": "Latitude", "autoWidth": true },
-                    { "data": "Longitude", "name": "Longitude", "autoWidth": true }
-                ]
+                    { "data": "id", "name": "Id", "autoWidth": true },
+                    { "data": "name", "name": "Name", "autoWidth": true },
+                    { "data": "latitude", "name": "Latitude", "autoWidth": true },
+                    { "data": "longitude", "name": "Longitude", "autoWidth": true }
+                ],
+                "initComplete": function (settings, json) {
+                    $("div.domInput").html($(".searchArea").removeAttr("hidden"));
+                }
             });
         }
     },

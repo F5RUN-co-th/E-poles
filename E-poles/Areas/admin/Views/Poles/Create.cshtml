@@ -76,7 +76,7 @@
         <div class="main-card mb-3 card">
             <div class="card-body">
                 <h5 class="card-title">เพิ่มข้อมูล</h5>
-                <form asp-action="CreatePoles" method="post">
+                <form id="formPole" asp-action="CreatePoles" method="post">
                     <div class="position-relative row form-group">
                         <label asp-for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
                         <div class="col-sm-4">
@@ -99,21 +99,43 @@
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
-                    @*<div class="position-relative row form-group">
-                            <label asp-for="Zone" class="col-sm-2 col-form-label">Zone</label>
-                            <div class="col-sm-10">
-                                <input asp-for="Zone" class="form-control" />
-                            </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Street" class="col-sm-2 col-form-label">Street</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Street" class="form-control" />
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            <span asp-validation-for="Street" class="text-danger"></span>
                         </div>
-                        <div class="position-relative row form-group">
-                            <label asp-for="Status" class="col-sm-2 col-form-label">Status</label>
-                            <div class="col-sm-10">
-                                <select asp-for="Status" name="select" class="form-control">
-                                    <option>1</option>
-                                    <option>2</option>
-                                </select>
-                            </div>
-                        </div>*@
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Area" class="col-sm-2 col-form-label">Area</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Area" class="form-control" />
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            <span asp-validation-for="Area" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Description" class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Description" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Note" class="col-sm-2 col-form-label">Note</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Note" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Status" class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10">
+                            <select asp-for="Status" class="form-control">
+                                <option value=true>ใช้งาน</option>
+                                <option value=false>เสีย</option>
+                            </select>
+                        </div>
+                    </div>
                     <button type="button" id="btnsubmit" class="mt-1 btn btn-primary">ตกลง</button>
                 </form>
             </div>
@@ -126,7 +148,7 @@
     <script src="~/lib/openlayers/ol-layerswitcher.js"></script>
     <script src="~/js/admin/poles-manage/create.js" asp-append-version="true"></script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
-<script>
+    <script>
         var _form = new EPoles();
         $(document).ready(function () {
             _form.getUrl = '@Url.Action("GetAllPoles")';
@@ -134,5 +156,5 @@
             _form.deletePoleUrl = '@Url.Action("DeletePoles")';
             _form.init();
         });
-</script>
+    </script>
 }

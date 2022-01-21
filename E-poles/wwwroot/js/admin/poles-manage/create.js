@@ -19,12 +19,20 @@ var EPoles = function () {
         this.popupContentDel = document.getElementById('popup-content3');
         this.popupClickDel = document.getElementById('popup-delete');
 
+        this.form = $("#formPole");
         this.txtLatitude = $("#Latitude");
         this.txtLongitude = $("#Longitude");
         this.txtName = $("#Name");
+        this.txtStreet = $("#Street");
+        this.txtArea = $("#Area");
+        this.txtDescription = $("#Description");
+        this.txtNote = $("#Note");
+        this.selectStatus = $("#Status");
         this.btnSubmit = $("#btnsubmit");
+
         this.vectorLayer = null;
         this.doDrawEnd = false;
+
     }
 
     _createClass(EPoles, [{
@@ -34,51 +42,57 @@ var EPoles = function () {
             this.createMap();
 
             this.btnSubmit.click(function () {
-                var _model = $('form').serialize();
-                $.ajax({
-                    url: me.createPoleUrl,
-                    type: "POST",
-                    data: _model,
-                    success: function success(data) {
-                        if (data) {
+                //var _model = $('form').serialize();
+                var _model = me.form.serialize();
+                $.validator.unobtrusive.parse(me.form);
+                me.form.validate();
 
-                            me.map.removeLayer(me.vectorLayer);
-                            me.vectorLayer = null;
+                if (me.form.valid()) {
+                    $.ajax({
+                        url: me.createPoleUrl,
+                        type: "POST",
+                        data: _model,
+                        success: function success(data) {
+                            if (data) {
 
-                            me.makeMarkers(data);
-                            /*
-                            let markers = data;
-                            var features = [];
-                            for (var i = 0; i < markers.length; i++) {
-                                var item = markers[i];
-                                var longitude = item.longitude;
-                                var latitude = item.latitude;
-                                var name = item.name;
-                                var iconFeature = new ol.Feature({
-                                    geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
-                                    name: name,
-                                });
-                                features.push(iconFeature);
+                                me.map.removeLayer(me.vectorLayer);
+                                me.vectorLayer = null;
+
+                                me.makeMarkers(data);
+                                /*
+                                let markers = data;
+                                var features = [];
+                                for (var i = 0; i < markers.length; i++) {
+                                    var item = markers[i];
+                                    var longitude = item.longitude;
+                                    var latitude = item.latitude;
+                                    var name = item.name;
+                                    var iconFeature = new ol.Feature({
+                                        geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
+                                        name: name,
+                                    });
+                                    features.push(iconFeature);
+                                }
+                                var vectorSource = new ol.source.Vector({ features: features });
+                                me.vectorLayer = new ol.layer.Vector({ source: vectorSource });
+                                me.map.addLayer(me.vectorLayer);
+                                */
+                                me.overlay2.setPosition(undefined);
+                                me.popupCloserAdd.blur();
+                                me.resetForm();
+
+                                me.doDrawEnd = false;
+                                //me.map.on('rendercomplete', function (event) {
+                                //    me.map.getView().setZoom(me.current_zoom - 0.001);
+                                //});
                             }
-                            var vectorSource = new ol.source.Vector({ features: features });
-                            me.vectorLayer = new ol.layer.Vector({ source: vectorSource });
-                            me.map.addLayer(me.vectorLayer);
-                            */
-                            me.overlay2.setPosition(undefined);
-                            me.popupCloserAdd.blur();
-                            me.txtLatitude.val("");
-                            me.txtLongitude.val("");
-                            me.txtName.val("");
-                            me.doDrawEnd = false;
-                            //me.map.on('rendercomplete', function (event) {
-                            //    me.map.getView().setZoom(me.current_zoom - 0.001);
-                            //});
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("error")
                         }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert("error")
-                    }
-                });
+                    });
+                }
+
             });
         }
     },
@@ -93,6 +107,20 @@ var EPoles = function () {
         }
     },
     {
+        key: 'resetForm',
+        value: function resetForm() {
+            var me = this;
+            me.txtLatitude.val("");
+            me.txtLongitude.val("");
+            me.txtName.val("");
+            me.txtStreet.val("");
+            me.txtArea.val("");
+            me.txtDescription.val("");
+            me.txtNote.val("");
+            me.selectStatus.prop('selectedIndex', 0);
+        }
+    },
+    {
         key: 'makeMarkers',
         value: function makeMarkers(markers) {
             var me = this;
@@ -102,6 +130,13 @@ var EPoles = function () {
                 var longitude = item.longitude;
                 var latitude = item.latitude;
                 var name = item.name;
+                var area = item.area;
+                var street = item.street;
+                var desc = item.description;
+                var note = item.note;
+                var status = item.status;
+                var lblstatus = status === true ? '<span class="badge badge-pill badge-success">ใช้งาน</span>' : '<span class="badge badge-pill badge-danger">เสีย</span>';
+
                 var iconFeature = new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
                     type: 'Point',
@@ -109,19 +144,43 @@ var EPoles = function () {
                     lat: latitude,
                     long: longitude,
                     name: name,
-                    desc: '<pre> <h6><b>' + name + '</b></h6 >' + 'Latitude : ' + latitude + '<br>Longitude: ' + longitude + '</pre>'
+                    area: area,
+                    street: street,
+                    description: desc,
+                    note: note,
+                    status: status,
+                    desc: '<pre style="margin-bottom: 0 !important;"><h6><b>' + name + '</b>' + lblstatus + '</h6 >' + 'Latitude : ' + latitude + '<br>Longitude: ' + longitude
+                        + '<br>Street: ' + street + '<br>Area: ' + area
+                        + '<br>Description: ' + desc + '<br>Note: ' + note
+                        + '</pre>'
                 });
-                var iconStyle = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 5,
-                        stroke: new ol.style.Stroke({
-                            //color: 'lime'
-                        }),
-                        fill: new ol.style.Fill({
-                            color: [0, 225, 0, 1]
-                        }),
-                    })
-                });
+                if (status) {
+                    var iconStyle = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            stroke: new ol.style.Stroke({
+                                //color: 'lime'
+                            }),
+                            fill: new ol.style.Fill({
+                                color: [0, 225, 0, 1]
+                            }),
+                        })
+                    });
+                }
+                else {
+                    var iconStyle = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 5,
+                            stroke: new ol.style.Stroke({
+                                //color: 'red'
+                            }),
+                            fill: new ol.style.Fill({
+                                color: [255, 0, 0]
+                            }),
+                        })
+                    });
+                }
+
                 //var iconStyle = new ol.style.Style({
                 //    image: new ol.style.Icon(({
                 //        anchor: [0.5, 1],
@@ -283,9 +342,7 @@ var EPoles = function () {
                 me.popupCloserAdd.onclick = function () {
                     me.overlay2.setPosition(undefined);
                     me.popupCloserAdd.blur();
-                    me.txtLatitude.val("");
-                    me.txtLongitude.val("");
-                    me.txtName.val("");
+                    me.resetForm();
                     me.doDrawEnd = false;
                     return false;
                 };
@@ -419,23 +476,21 @@ var EPoles = function () {
             me.popupClickDel.onclick = function (evt) {
                 var features = select_interaction.getFeatures();
                 if (features) {
-
-                    //var model = {
-                    //    Id: select_interaction.getFeatures().item(0).get("makerid"),
-                    //    Name: select_interaction.getFeatures().item(0).get("name"),
-                    //    Latitude: select_interaction.getFeatures().item(0).get("lat"),
-                    //    Longitude: select_interaction.getFeatures().item(0).get("long")
-                    //};
-                    var data = {};
-                    data["Id"] = select_interaction.getFeatures().item(0).get("makerid");
-                    data["Name"] = select_interaction.getFeatures().item(0).get("name");
-                    data["Latitude"] = select_interaction.getFeatures().item(0).get("lat");
-                    data["Longitude"] = select_interaction.getFeatures().item(0).get("long");
+                    var obj = {};
+                    obj["Id"] = select_interaction.getFeatures().item(0).get("makerid");
+                    obj["Name"] = select_interaction.getFeatures().item(0).get("name");
+                    obj["Latitude"] = select_interaction.getFeatures().item(0).get("lat");
+                    obj["Longitude"] = select_interaction.getFeatures().item(0).get("long");
+                    obj["Area"] = select_interaction.getFeatures().item(0).get("area");
+                    obj["Street"] = select_interaction.getFeatures().item(0).get("street");
+                    obj["Note"] = select_interaction.getFeatures().item(0).get("note");
+                    obj["Description"] = select_interaction.getFeatures().item(0).get("description");
+                    obj["Status"] = select_interaction.getFeatures().item(0).get("status");
 
                     $.ajax({
                         type: "POST",
                         url: me.deletePoleUrl,
-                        data: JSON.stringify(data),
+                        data: JSON.stringify(obj),
                         dataType: 'JSON',
                         contentType: "application/json",
                         success: function success(data) {
@@ -445,7 +500,9 @@ var EPoles = function () {
                                 me.vectorLayer = null;
 
                                 me.makeMarkers(data);
-                                me.overlay3.setPosition(undefined);
+                                if (me.overlay3 != undefined) {
+                                    me.overlay3.setPosition(undefined);
+                                }
                                 me.popupClickDel.blur();
                                 me.doDrawEnd = false;
                             }

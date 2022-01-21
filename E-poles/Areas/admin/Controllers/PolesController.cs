@@ -24,17 +24,21 @@ namespace E_poles.Areas.admin.Controllers
 
         public IActionResult Create() => View();
 
-        public async Task<IActionResult> GetDtPolesList([FromBody] DtParameters dtParameters, SrchPolesModel searchModel)
+        public async Task<IActionResult> GetDtPolesList([FromBody] SrchPolesModel model)
         {
             var result = await _epoleService.GetAll();
-            return Json(new DtResult<Poles>
-            {
-                Draw = dtParameters.Draw,
-                RecordsTotal = result.Count(),
-                RecordsFiltered = result.Count(),
-                Data = result.Skip(dtParameters.Start)
-                    .Take(dtParameters.Length)
-            });
+            int recordsTotal = result.Count();
+            var data = result.Skip(model.Start).Take(model.Length);
+            var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+            return Ok(jsonData);
+            //return Json(new DtResult<Poles>
+            //{
+            //    Draw = dtParameters.Draw,
+            //    RecordsTotal = result.Count(),
+            //    RecordsFiltered = result.Count(),
+            //    Data = result.Skip(dtParameters.Start)
+            //        .Take(dtParameters.Length)
+            //});
         }
 
         [HttpGet]
