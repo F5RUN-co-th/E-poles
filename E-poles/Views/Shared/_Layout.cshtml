@@ -4,45 +4,114 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Electric Pole</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />*@
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="msapplication-tap-highlight" content="no">
+    <link href="~/css/admin/main.v2.css" rel="stylesheet" />
+    <style>
+        .app-footer-center {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 4px;
+            padding: 8px;
+            line-height: 36px;
+            border-top: 3px double #E5E5E5;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Electric Pole</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+        <div class="app-header header-shadow">
+            <div class="app-header__logo">
+                <a asp-controller="Home" asp-action="Index" class="nav-link">
+                    <div class="logo-src"></div>
+                </a>
+                @*<div class="header__pane ml-auto">
+            <div>
+                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            @*<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>*@
-                        </li>
-                        <li class="nav-item">
-                            @*<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>*@
-                        </li>
-                    </ul>
+            </div>
+        </div>*@
+            </div>
+            <div class="app-header__mobile-menu">
+                <div>
+                    <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021-2022 Electric Pole, All rights reserved.
+            <div class="app-header__menu">
+                <span>
+                    <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                        <span class="btn-icon-wrapper">
+                            <i class="fa fa-ellipsis-v fa-w-6"></i>
+                        </span>
+                    </button>
+                </span>
+            </div>
+            <div class="app-header__content">
+                <div class="app-header-left">
+                    @*<div class="search-wrapper">
+                            <div class="input-holder">
+                                <input type="text" class="search-input" placeholder="Type to search">
+                                <button class="search-icon"><span></span></button>
+                            </div>
+                            <button class="close"></button>
+                        </div>*@
+                    <ul class="header-menu nav">
+                        <li class="nav-item">
+                            <a asp-controller="Poles" asp-action="Index" class="nav-link">
+                                <i class="nav-link-icon fa fa-database"> </i>
+                                รายการ ข้อมูลทั้งหมด
+                            </a>
+                        </li>
+                        @*<li class="btn-group nav-item">
+                                <a href="javascript:void(0);" class="nav-link">
+                                    <i class="nav-link-icon fa fa-edit"></i>
+                                    Projects
+                                </a>
+                            </li>
+                            <li class="dropdown nav-item">
+                                <a href="javascript:void(0);" class="nav-link">
+                                    <i class="nav-link-icon fa fa-cog"></i>
+                                    Settings
+                                </a>
+                            </li>*@
+                    </ul>
+                </div>
+                <div class="app-header-right">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
         </div>
-    </footer>
+        <div class="app-main">
+            <div class="app-main__outer" style="padding: 0;">
+                <div class="app-main__inner">
+                    @RenderBody()
+                </div>
+                <div class="app-wrapper-footer">
+                    <div class="app-footer">
+                        <div class="app-footer__inner">
+                            <div class="app-footer-center">
+                                &copy; 2021-2022 Electric Pole, All rights reserved.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="~/js/admin/main.v2.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

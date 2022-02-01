@@ -16,16 +16,15 @@ namespace E_poles.Services
         {
             _context = context;
         }
+        public async Task<bool> UpdateAsync(Poles model)
+        {
+            _context.Poles.Update(model);
+            await _context.SaveChangesAsync();
 
+            return true;
+        }
         public async Task<Poles> CreateAsync(Poles model)
         {
-            //long objId = 0;
-            //using (var connection = _context.Database.GetDbConnection())
-            //{
-            //    objId = await connection.InsertAsync(model);
-            //}
-
-            //return await _context.Database.GetDbConnection().GetAsync<Poles>(objId);
             var data = await _context.Poles.AddAsync(model);
             await _context.SaveChangesAsync();
 
@@ -41,13 +40,32 @@ namespace E_poles.Services
 
         public async Task<IEnumerable<Poles>> GetAll()
         {
-            using (var connection = _context.Database.GetDbConnection())
-            {
-                var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
+            var connection = _context.Database.GetDbConnection();
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
 
-                return poles;
-            }
+            return poles;
+            //using (var connection = _context.Database.GetDbConnection())
+            //{
+            //    var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
 
+            //    return poles;
+            //}
+
+        }
+
+        public async Task<IEnumerable<Poles>> GetAllArea()
+        {
+            var connection = _context.Database.GetDbConnection();
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Area] FROM [dbo].[Poles] GROUP BY Area;", commandType: CommandType.Text);
+
+            return poles;
+        }
+        public async Task<IEnumerable<Poles>> GetAllStreet()
+        {
+            var connection = _context.Database.GetDbConnection();
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Street] FROM [dbo].[Poles] GROUP BY Street;", commandType: CommandType.Text);
+
+            return poles;
         }
     }
 }

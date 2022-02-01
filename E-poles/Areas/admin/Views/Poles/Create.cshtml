@@ -27,6 +27,8 @@
             content: "✖";
         }
 </style>
+<!-- ol-ext -->
+
 <div class="app-page-title">
     <div class="page-title-wrapper">
         <div class="page-title-heading">
@@ -66,7 +68,10 @@
                     </div>
                     <div id="popup3" class="ol-popup">
                         <div id="popup-content3"></div>
-                        <a href="#" id="popup-delete" style="float: right; font-size: 12px;">ลบ</a>
+                        <div class="d-block text-right card-footer" style="padding: 0;">
+                            <a href="#" id="popup-edit" style="font-size: 12px;" class="mr-2"><i class="fa fa-edit fa-w-20">แก้ไข</i></a>
+                            <a href="#" id="popup-delete" style="font-size: 12px;">ลบ</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,8 +80,9 @@
     <div class="col-lg-12 col-xl-6">
         <div class="main-card mb-3 card">
             <div class="card-body">
-                <h5 class="card-title">เพิ่มข้อมูล</h5>
+                <h5 class="card-title" id="headform"></h5>
                 <form id="formPole" asp-action="CreatePoles" method="post">
+                    <input asp-for="Id" type="hidden" />
                     <div class="position-relative row form-group">
                         <label asp-for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
                         <div class="col-sm-4">
@@ -146,6 +152,10 @@
 @section Scripts{
     <script src="~/lib/openlayers/ol.js"></script>
     <script src="~/lib/openlayers/ol-layerswitcher.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css" />
+    <script type="text/javascript" src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
+
     <script src="~/js/admin/poles-manage/create.js" asp-append-version="true"></script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
@@ -153,6 +163,7 @@
         $(document).ready(function () {
             _form.getUrl = '@Url.Action("GetAllPoles")';
             _form.createPoleUrl = '@Url.Action("CreatePoles")';
+            _form.updatePoleUrl = '@Url.Action("UpdatePoles")';
             _form.deletePoleUrl = '@Url.Action("DeletePoles")';
             _form.init();
         });

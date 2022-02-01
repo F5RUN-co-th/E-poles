@@ -18,8 +18,11 @@ var EPoles = function () {
         this.popupInputDel = document.getElementById('popup3');
         this.popupContentDel = document.getElementById('popup-content3');
         this.popupClickDel = document.getElementById('popup-delete');
+        this.popupClickEdit = document.getElementById('popup-edit');
 
+        this.headform = $("#headform");
         this.form = $("#formPole");
+        this.hiddenId = $("#Id");
         this.txtLatitude = $("#Latitude");
         this.txtLongitude = $("#Longitude");
         this.txtName = $("#Name");
@@ -40,7 +43,7 @@ var EPoles = function () {
         value: function init() {
             var me = this;
             this.createMap();
-
+            me.headform.text("เพิ่มข้อมูล");
             this.btnSubmit.click(function () {
                 //var _model = $('form').serialize();
                 var _model = me.form.serialize();
@@ -48,8 +51,15 @@ var EPoles = function () {
                 me.form.validate();
 
                 if (me.form.valid()) {
+                    let apiUrl = "";
+                    if ($("#headform").text() === "เพิ่มข้อมูล") {
+                        apiUrl = me.createPoleUrl;
+                    }
+                    else {
+                        apiUrl = me.updatePoleUrl;
+                    }
                     $.ajax({
-                        url: me.createPoleUrl,
+                        url: apiUrl,
                         type: "POST",
                         data: _model,
                         success: function success(data) {
@@ -77,6 +87,9 @@ var EPoles = function () {
                                 me.vectorLayer = new ol.layer.Vector({ source: vectorSource });
                                 me.map.addLayer(me.vectorLayer);
                                 */
+                                if (me.overlay3 != undefined) {
+                                    me.overlay3.setPosition(undefined);
+                                }
                                 me.overlay2.setPosition(undefined);
                                 me.popupCloserAdd.blur();
                                 me.resetForm();
@@ -118,6 +131,7 @@ var EPoles = function () {
             me.txtDescription.val("");
             me.txtNote.val("");
             me.selectStatus.prop('selectedIndex', 0);
+            me.headform.text("เพิ่มข้อมูล");
         }
     },
     {
@@ -132,11 +146,11 @@ var EPoles = function () {
                 var name = item.name;
                 var area = item.area;
                 var street = item.street;
-                var desc = item.description;
-                var note = item.note;
+                var desc = item.description === null ? "" : item.description;
+                var note = item.note === null ? "" : item.note;
                 var status = item.status;
-                var lblstatus = status === true ? '<span class="badge badge-pill badge-success">ใช้งาน</span>' : '<span class="badge badge-pill badge-danger">เสีย</span>';
-
+                var lblstatus = status === true ? '<span class="ml-auto badge badge-success">ใช้งาน</span>' : '<span class="ml-auto badge badge-danger">เสีย</span>';
+                var lblheader = '<div class="card-header" style="padding: 0;height: 2.5rem;">' + name + '<div class="btn-actions-pane-right">' + lblstatus + '</div></div>';
                 var iconFeature = new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857')),
                     type: 'Point',
@@ -149,7 +163,7 @@ var EPoles = function () {
                     description: desc,
                     note: note,
                     status: status,
-                    desc: '<pre style="margin-bottom: 0 !important;"><h6><b>' + name + '</b>' + lblstatus + '</h6 >' + 'Latitude : ' + latitude + '<br>Longitude: ' + longitude
+                    desc: '<pre style="margin-bottom: 0 !important;">' + lblheader + 'Latitude : ' + latitude + '<br>Longitude: ' + longitude
                         + '<br>Street: ' + street + '<br>Area: ' + area
                         + '<br>Description: ' + desc + '<br>Note: ' + note
                         + '</pre>'
@@ -191,8 +205,8 @@ var EPoles = function () {
                 iconFeature.setStyle(iconStyle);
                 features.push(iconFeature);
             }
-            var vectorSource = new ol.source.Vector({ features: features });
-            me.vectorLayer = new ol.layer.Vector({ source: vectorSource });
+            this.vectorSource = new ol.source.Vector({ features: features });
+            me.vectorLayer = new ol.layer.Vector({ source: me.vectorSource, style: new ol.style.Style({ image: new ol.style.Icon({ src: "../data/camera.png", scale: 0.8 }) }) });
             me.map.addLayer(me.vectorLayer);
         }
     },
@@ -239,7 +253,7 @@ var EPoles = function () {
                 ],
                 controls: ol.control.defaults({ attribution: false }).extend([new ol.control.Control({ element: element })]),
                 view: new ol.View({
-                    center: ol.proj.fromLonLat([100.840838, 14.197160]),// center thaiLand
+                    center: ol.proj.fromLonLat([102.57400, 14.36129]),// center thaiLand
                     zoom: 6,
                     minZoom: 6,
                     maxZoom: 25,
@@ -314,12 +328,12 @@ var EPoles = function () {
 
             var container3 = me.popupInputDel;
             var content3 = me.popupContentDel;
-            var overlay3 = new ol.Overlay({
+            this.overlay3 = new ol.Overlay({
                 element: container3,
                 positioning: "bottom-center",
                 stopEvent: false
             });
-            me.map.addOverlay(overlay3);
+            me.map.addOverlay(me.overlay3);
 
             var handleNewPole = function (e) {
                 var Msource = new ol.source.Vector();
@@ -456,22 +470,61 @@ var EPoles = function () {
                 });
 
                 if (popupText) {
-                    overlay3.setPosition(coord);
+                    me.overlay3.setPosition(coord);
                     content3.innerHTML = popupText;
                 }
                 else {
-                    overlay3.setPosition(undefined);
+                    me.overlay3.setPosition(undefined);
                 }
             });
 
+            // Set the control grid reference
+            var search = new ol.control.SearchFeature(
+                {   //target: $(".options").get(0),
+                    source: me.vectorSource,
+                    property: $(".options select").val()
+                });
+            me.map.addControl(search);
+
             var select_interaction = new ol.interaction.Select();
             me.map.addInteraction(select_interaction);
+
+            // Select feature when click on the reference index
+            search.on('select', function (e) {
+                select_interaction.getFeatures().clear();
+                select_interaction.getFeatures().push(e.search);
+                var p = e.search.getGeometry().getFirstCoordinate();
+                me.map.getView().animate({ center: p, zoom: Math.max(me.map.getView().getZoom(), 19) });
+                content3.innerHTML = e.search.get("desc");
+                me.overlay3.setPosition(p);
+            });
+
             select_interaction.on('select', function (evt) {
                 var features = select_interaction.getFeatures();
                 if (features) {
 
                 }
             });
+
+            me.popupClickEdit.onclick = function (evt) {
+                var features = select_interaction.getFeatures();
+                if (features) {
+                    me.headform.text("แก้ไขข้อมูล");
+                    me.hiddenId.val(select_interaction.getFeatures().item(0).get("makerid"));
+                    me.txtLatitude.val(select_interaction.getFeatures().item(0).get("lat"));
+                    me.txtLongitude.val(select_interaction.getFeatures().item(0).get("long"));
+                    me.txtName.val(select_interaction.getFeatures().item(0).get("name"));
+                    me.txtStreet.val(select_interaction.getFeatures().item(0).get("street"));
+                    me.txtArea.val(select_interaction.getFeatures().item(0).get("area"));
+                    me.txtDescription.val(select_interaction.getFeatures().item(0).get("description"));
+                    me.txtNote.val(select_interaction.getFeatures().item(0).get("note"));
+                    me.selectStatus.val(select_interaction.getFeatures().item(0).get("status").toString());
+                    var coord = features.R[0].getGeometry().getCoordinates();
+                    me.overlay3.setPosition(coord);
+                    me.doDrawEnd = true;
+                }
+                return false;
+            };
 
             me.popupClickDel.onclick = function (evt) {
                 var features = select_interaction.getFeatures();
@@ -504,6 +557,7 @@ var EPoles = function () {
                                     me.overlay3.setPosition(undefined);
                                 }
                                 me.popupClickDel.blur();
+                                me.resetForm();
                                 me.doDrawEnd = false;
                             }
                         },

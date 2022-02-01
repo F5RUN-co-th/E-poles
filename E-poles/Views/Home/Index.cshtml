@@ -5,14 +5,32 @@
 <link href="~/css/openlayers/ol-layerswitcher.css" rel="stylesheet" />
 <link href="~/css/openlayers/ol-customs.css" rel="stylesheet" />
 
-<div id="map" class="map"></div>
-<div id="popup" class="ol-popup">
-    <div id="popup-content"></div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                @*<h5 class="card-title">Income Report</h5>*@
+                <div class="widget-chart-wrapper widget-chart-wrapper-lg opacity-10 m-0">
+                    <div id="map" class="map"></div>
+                    <div id="popup" class="ol-popup">
+                        <div id="popup-content"></div>
+                    </div>
+                    <div id="popup-hover" class="ol-popup">
+                        <div id="popup-content-hover"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts{
     <script src="~/lib/openlayers/ol.js"></script>
     <script src="~/lib/openlayers/ol-layerswitcher.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css" />
+    <script type="text/javascript" src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
+
     <script src="~/js/e-poles.js" asp-append-version="true"></script>
     <script>
         var _form = new EPoles();

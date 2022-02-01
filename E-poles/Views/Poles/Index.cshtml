@@ -3,36 +3,6 @@
     ViewData["Title"] = "Pole List";
 }
 
-<div class="app-page-title">
-    <div class="page-title-wrapper">
-        <div class="page-title-heading">
-            <div class="page-title-subheading opacity-10">
-                <nav class="" aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a>
-                                <i aria-hidden="true" class="fa fa-home"></i>
-                            </a>
-                        </li>
-                        <li class="active breadcrumb-item" aria-current="page">
-                            Pole Management
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="page-title-actions">
-            <div class="d-inline-block">
-                <a asp-action="Create" class="btn-shadow btn btn-info">
-                    <span class="btn-icon-wrapper pr-2 opacity-7">
-                        <i class="fa fa-edit fa-w-20"></i>
-                    </span>
-                    Management
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -71,7 +41,7 @@
                         <button id="btn_search" type="button" class="mb-2 mr-2 btn btn-shadow btn-info"><i class="pe-7s-search"></i></button>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_poleslist">
+                        <table style="width: 100%;" class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_poleslist">
                             <thead>
                                 <tr>
                                     <th>Id</th>
@@ -83,7 +53,6 @@
                                     <th>Description</th>
                                     <th>Note</th>
                                     <th>Status</th>
-                                    <th></th>
                                 </tr>
                             </thead>
                         </table>
@@ -104,7 +73,7 @@
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/js/tools.js"></script>
-    <script src="~/js/admin/poles-manage/index.js" asp-append-version="true"></script>
+    <script src="~/js/e-poles-list.js" asp-append-version="true"></script>
     <script>
             var _form = new EPoles();
             $(document).ready(function () {

@@ -9,7 +9,7 @@ var EPoles = function () {
         _classCallCheck(this, EPoles);
         this.dtList = $('#gv_poleslist');
         this.order = [[1, "desc"]];//<'domInput'>
-        this.dom = "<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-8'<'domInput dataTables_filter'>>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+        this.dom = "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'domInput dataTables_filter'>>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
         this.searching = false;
         this.search = $('#searchForm');
         this.btnSearch = $('#btn_search');
@@ -83,18 +83,6 @@ var EPoles = function () {
                             }
                             else {
                                 return '<div class="badge badge-danger">เสีย</div>';
-                            }
-                        }
-                    },
-                    {
-                        className: "text-center",
-                        "data": "id",
-                        "render": function (data, row) {
-                            if (data) {
-                                return '<button title="ลบ" class="border-0 btn-transition btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>';
-                            }
-                            else {
-                                return '<button title="ลบ" class="border-0 btn-transition btn btn-outline-danger"><i class="fa fa-trash-alt"></i></button>';
                             }
                         }
                     }
