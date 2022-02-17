@@ -54,7 +54,9 @@ namespace E_poles.Dal
             });
         }
 
-        public virtual DbSet<UserProfile> UserProfile { get; set; }
+        public virtual DbSet<UserGroups> UserGroups { get; set; }
+
+        public virtual DbSet<Groups> Groups { get; set; }
 
         public virtual DbSet<Poles> Poles { get; set; }
     }

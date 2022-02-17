@@ -6,5 +6,4 @@ namespace E_poles.Dal
     {
         
     }
-    
 }

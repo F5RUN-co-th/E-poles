@@ -74,15 +74,15 @@ namespace E_poles.Services
                 if (result.Succeeded)
                 {
                     //add to user profile
-                    UserProfile profile = new UserProfile();
-                    profile.FirstName = "Super";
-                    profile.LastName = "Admin";
-                    profile.Email = superAdmin.Email;
-                    profile.UserId = superAdmin.Id;
-                    await _context.UserProfile.AddAsync(profile);
-                    await _context.SaveChangesAsync();
+                    //UserProfile profile = new UserProfile();
+                    //profile.FirstName = "Super";
+                    //profile.LastName = "Admin";
+                    //profile.Email = superAdmin.Email;
+                    //profile.UserId = superAdmin.Id;
+                    //await _context.UserProfile.AddAsync(profile);
+                    //await _context.SaveChangesAsync();
 
-                    await _roles.AddToRoles(superAdmin.Id, RoleEnum.Administrator);
+                    await _roles.AddToRoles(superAdmin.Id, RoleEnum.SuperAdministrator);
                 }
             }
             catch (Exception)
