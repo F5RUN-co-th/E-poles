@@ -9,6 +9,7 @@ namespace E_poles.Areas.admin.Models
     public class PoleViewModel
     {
         public int Id { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

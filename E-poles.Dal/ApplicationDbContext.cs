@@ -17,7 +17,11 @@ namespace E_poles.Dal
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<UserGroups>().HasKey(table => new
+            {
+                table.UserId,
+                table.GroupsId
+            });
             modelBuilder.Entity<User>(b =>
             {
                 b.ToTable("Users");
@@ -54,10 +58,8 @@ namespace E_poles.Dal
             });
         }
 
-        public virtual DbSet<UserGroups> UserGroups { get; set; }
-
         public virtual DbSet<Groups> Groups { get; set; }
-
+        public virtual DbSet<UserGroups> UserGroups { get; set; }
         public virtual DbSet<Poles> Poles { get; set; }
     }
 }

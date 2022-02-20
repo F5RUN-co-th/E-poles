@@ -2,6 +2,7 @@
 using E_poles.Dal;
 using E_poles.Areas.admin.Models;
 using E_poles.Models.Pole;
+using E_poles.Models.Group;
 
 namespace E_poles.Data
 {
@@ -11,6 +12,8 @@ namespace E_poles.Data
         {
             CreateMap<Poles, PoleViewModel>().ReverseMap();
             CreateMap<Poles, PoleListModel>().ReverseMap();
+            CreateMap<Groups, GroupViewModel>().ReverseMap();
+            CreateMap<Groups, GroupListModel>().ReverseMap();
         }
     }
 }

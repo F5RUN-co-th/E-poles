@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using E_poles.Dal
-@model SrchPolesModel
+@model SrchGroupModel
 @{
-    ViewData["Title"] = "Pole List";
+    ViewData["Title"] = "Groups List";
 }
 @inject UserManager<User> UserManager
 <div class="app-page-title">
@@ -17,7 +17,7 @@
                             </a>
                         </li>
                         <li class="active breadcrumb-item" aria-current="page">
-                            Pole Management
+                            Group Management
                         </li>
                     </ol>
                 </nav>
@@ -29,7 +29,7 @@
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-edit fa-w-20"></i>
                     </span>
-                    Management
+                    Create Group
                 </a>
             </div>
         </div>
@@ -54,40 +54,15 @@
                 <form id="searchForm" name="searchForm" method="post">
                     <input asp-for="UserId" value="@cUser.Id" type="hidden" />
                     <div class="searchArea" hidden>
-                        <label>
-                            <select asp-for="SelectedArea" asp-items="Model.AreaList" class="form-control form-control-sm">
-                                <option value="" selected>พื้นที่บริเวณ</option>
-                            </select>
-                        </label>
-                        <label>
-                            <select asp-for="SelectedStreet" asp-items="Model.StreetList" class="form-control form-control-sm">
-                                <option value="" selected>ถนน</option>
-                            </select>
-                        </label>
-                        <label>
-                            <select asp-for="SelectedStatus" class="form-control form-control-sm">
-                                <option value="" selected>สถานะ</option>
-                                <option value=1>ใช้งาน</option>
-                                <option value=0>เสีย</option>
-                            </select>
-                        </label>
-                        &nbsp;
                         <label>ค้นหา :<input asp-for="KeySearch" type="search" class="form-control form-control-sm"></label>
                         <button id="btn_search" type="button" class="mb-2 mr-2 btn btn-shadow btn-info"><i class="pe-7s-search"></i></button>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_poleslist">
+                        <table class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_groupslist">
                             <thead>
                                 <tr>
                                     <th>Id</th>
                                     <th>Name</th>
-                                    <th>Latitude</th>
-                                    <th>Longitude</th>
-                                    <th>Area</th>
-                                    <th>Street</th>
-                                    <th>Description</th>
-                                    <th>Note</th>
-                                    <th>Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -109,11 +84,12 @@
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/js/tools.js"></script>
-    <script src="~/js/admin/poles-manage/index.js" asp-append-version="true"></script>
+    <script src="~/js/admin/groups-manage/index.js" asp-append-version="true"></script>
     <script>
-            var _form = new EPoles();
+        var _form = new Groups();
             $(document).ready(function () {
-                _form.getUrl = '@Url.Action("GetDtPolesList")';
+                _form.getUrl = '@Url.Action("GetDtGroupsList")';
+                _form.updateUrl = '@Url.Action("Update")';
                 _form.init();
             });
     </script>

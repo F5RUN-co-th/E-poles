@@ -1,9 +1,13 @@
-﻿@model SrchPolesModel
+﻿@using Microsoft.AspNetCore.Identity
+@using E_poles.Dal
+@model SrchPolesModel
 @{
     ViewData["Title"] = "Pole List";
 }
-
-
+@inject UserManager<User> UserManager
+@{
+    var cUser = await UserManager.GetUserAsync(User);
+}
 <div class="row">
     <div class="col-md-12">
         <div class="main-card mb-3 card">
@@ -18,6 +22,7 @@
             </div>
             <div class="card-body">
                 <form id="searchForm" name="searchForm" method="post">
+                    <input asp-for="UserId" value="@cUser.Id" type="hidden" />
                     <div class="searchArea" hidden>
                         <label>
                             <select asp-for="SelectedArea" asp-items="Model.AreaList" class="form-control form-control-sm">

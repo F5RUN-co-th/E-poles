@@ -15,11 +15,13 @@ namespace E_poles.Areas.admin.Controllers
 {
     public class PolesController : AdminBaseController
     {
+        IGroupService _groupService;
         IEpoleService _epoleService;
         private readonly IMapper _mapper;
-        public PolesController(IEpoleService epoleService, IMapper mapper)
+        public PolesController(IGroupService groupService, IEpoleService epoleService, IMapper mapper)
         {
             _mapper = mapper;
+            _groupService = groupService;
             _epoleService = epoleService;
         }
 
@@ -40,22 +42,23 @@ namespace E_poles.Areas.admin.Controllers
             }).ToList();
             return View(model);
         }
+
         public IActionResult Create() => View();
 
         public async Task<IActionResult> GetDtPolesList([FromBody] SrchPolesModel model)
         {
-            var result = await _epoleService.GetAll();
+            var result = await GetAllPolesByGroupId(model.UserId);
 
             var poleList = _mapper.Map<IEnumerable<PoleListModel>>(result);
             if (!String.IsNullOrEmpty(model.KeySearch))
             {
                 poleList = poleList.Where(s =>
-                                    s.FullName.Contains(model.KeySearch) ||
-                                    s.Name.Contains(model.KeySearch) ||
+                                    s.FullName.ToLower().Contains(model.KeySearch.ToLower()) ||
+                                    s.Name.ToLower().Contains(model.KeySearch.ToLower()) ||
                                     s.Area.Contains(model.KeySearch) ||
                                     s.Street.Contains(model.KeySearch) ||
-                                    s.Note.Contains(model.KeySearch) ||
-                                    s.Description.Contains(model.KeySearch));
+                                    s.Note.ToLower().Contains(model.KeySearch.ToLower()) ||
+                                    s.Description.ToLower().Contains(model.KeySearch.ToLower()));
             }
             if (!String.IsNullOrEmpty(model.SelectedArea))
             {
@@ -78,18 +81,21 @@ namespace E_poles.Areas.admin.Controllers
             var data = poleList.Skip(model.Start).Take(model.Length);
             var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
             return Ok(jsonData);
-            //return Json(new DtResult<Poles>
-            //{
-            //    Draw = dtParameters.Draw,
-            //    RecordsTotal = result.Count(),
-            //    RecordsFiltered = result.Count(),
-            //    Data = result.Skip(dtParameters.Start)
-            //        .Take(dtParameters.Length)
-            //});
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPoles() => Ok(await _epoleService.GetAll());
+        public async Task<IActionResult> GetAllPoles(string userId)
+        {
+            return Ok(await GetAllPolesByGroupId(userId));
+        }
+
+        private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(string userId)
+        {
+            var userGroups = await _groupService.GetGroupByUserId(int.Parse(userId));
+
+            var result = await _epoleService.GetAll(userGroups.GroupsId);
+            return result;
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreatePoles(PoleViewModel model)
@@ -116,7 +122,7 @@ namespace E_poles.Areas.admin.Controllers
                         //    StatusCode = 200
                         //};
                         //return RedirectToAction(nameof(Create));
-                        return Ok(await _epoleService.GetAll());
+                        return Ok(await GetAllPolesByGroupId(model.UserId));
                     }
                     else
                     {
@@ -150,7 +156,7 @@ namespace E_poles.Areas.admin.Controllers
                     var result = await _epoleService.UpdateAsync(pole);
                     if (result)
                     {
-                        return Ok(await _epoleService.GetAll());
+                        return Ok(await GetAllPolesByGroupId(model.UserId));
                     }
                     else
                     {
@@ -177,7 +183,7 @@ namespace E_poles.Areas.admin.Controllers
                     var result = await _epoleService.DeleteAsync(pole);
                     if (result)
                     {
-                        return Ok(await _epoleService.GetAll());
+                        return Ok(await GetAllPolesByGroupId(data.UserId));
                     }
                     else
                     {

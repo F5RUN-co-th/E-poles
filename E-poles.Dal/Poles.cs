@@ -15,7 +15,7 @@ namespace E_poles.Dal
         public string Description { get; set; }
         public bool Status { get; set; }
 
-        public int GroupId { get; set; }
+        public int GroupsId { get; set; }
         public Groups Groups { get; set; }
     }
 }

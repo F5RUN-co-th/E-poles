@@ -68,9 +68,7 @@ namespace E_poles.Services
                     Email = _superAdminDefaultOptions.Email,
                     EmailConfirmed = true
                 };
-
                 var result = await _userManager.CreateAsync(superAdmin, _superAdminDefaultOptions.Password);
-
                 if (result.Succeeded)
                 {
                     //add to user profile
@@ -82,10 +80,26 @@ namespace E_poles.Services
                     //await _context.UserProfile.AddAsync(profile);
                     //await _context.SaveChangesAsync();
 
+                    //add to user group
+                    Groups grp = new Groups
+                    {
+                        Name = Enum.GetName(typeof(RoleEnum), RoleEnum.SuperAdministrator)
+                    };
+                    await _context.Groups.AddAsync(grp);
+                    await _context.SaveChangesAsync();
+
+                    UserGroups usergrp = new UserGroups
+                    {
+                        UserId = superAdmin.Id,
+                        GroupsId = grp.Id
+                    };
+                    await _context.UserGroups.AddAsync(usergrp);
+                    await _context.SaveChangesAsync();
+
                     await _roles.AddToRoles(superAdmin.Id, RoleEnum.SuperAdministrator);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;

@@ -1,10 +1,15 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using E_poles.Dal
+@{
     ViewData["Title"] = "Home Page";
 }
+@inject UserManager<User> UserManager
 <link href="~/css/openlayers/ol.css" rel="stylesheet" type="text/css" />
 <link href="~/css/openlayers/ol-layerswitcher.css" rel="stylesheet" />
 <link href="~/css/openlayers/ol-customs.css" rel="stylesheet" />
-
+@{
+    var cUser = await UserManager.GetUserAsync(User);
+}
 <div class="row">
     <div class="col-lg-12">
         <div class="main-card mb-3 card">
@@ -35,7 +40,7 @@
     <script>
         var _form = new EPoles();
         $(document).ready(function () {
-            _form.getUrl = '@Url.Action("GetAllPoles")';
+            _form.getUrl = '@Url.Action("GetAllPoles")/?userId='+@cUser.Id;
             _form.init();
         });
     </script>

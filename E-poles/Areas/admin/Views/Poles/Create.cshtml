@@ -1,8 +1,10 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using E_poles.Dal
+@{
     ViewData["Title"] = "Pole Management";
 }
 @model PoleViewModel
-
+@inject UserManager<User> UserManager
 <link href="~/css/openlayers/ol.css" rel="stylesheet" />
 <link href="~/css/openlayers/ol-layerswitcher.css" rel="stylesheet" />
 <link href="~/css/openlayers/ol-customs.css" rel="stylesheet" />
@@ -28,7 +30,9 @@
         }
 </style>
 <!-- ol-ext -->
-
+@{
+    var cUser = await UserManager.GetUserAsync(User);
+}
 <div class="app-page-title">
     <div class="page-title-wrapper">
         <div class="page-title-heading">
@@ -83,6 +87,7 @@
                 <h5 class="card-title" id="headform"></h5>
                 <form id="formPole" asp-action="CreatePoles" method="post">
                     <input asp-for="Id" type="hidden" />
+                    <input asp-for="UserId" value="@cUser.Id" type="hidden" />
                     <div class="position-relative row form-group">
                         <label asp-for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
                         <div class="col-sm-4">
@@ -161,7 +166,7 @@
     <script>
         var _form = new EPoles();
         $(document).ready(function () {
-            _form.getUrl = '@Url.Action("GetAllPoles")';
+            _form.getUrl = '@Url.Action("GetAllPoles")/'+@cUser.Id;
             _form.createPoleUrl = '@Url.Action("CreatePoles")';
             _form.updatePoleUrl = '@Url.Action("UpdatePoles")';
             _form.deletePoleUrl = '@Url.Action("DeletePoles")';

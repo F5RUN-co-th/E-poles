@@ -7,8 +7,8 @@ namespace E_poles.Dal
     }
     public enum RoleEnum
     {
-        SuperAdministrator = 0,
-        Administrator = 1,
-        User = 2
+        SuperAdministrator = 1,
+        Administrator = 2,
+        User = 3
     }
 }

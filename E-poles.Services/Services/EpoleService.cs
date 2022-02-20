@@ -2,6 +2,7 @@
 using Dapper.Contrib.Extensions;
 using E_poles.Dal;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -38,10 +39,11 @@ namespace E_poles.Services
             return true;
         }
 
-        public async Task<IEnumerable<Poles>> GetAll()
+        public async Task<IEnumerable<Poles>> GetAll(int groupsId)
         {
             var connection = _context.Database.GetDbConnection();
-            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status] FROM [dbo].[Poles];", commandType: CommandType.Text);
+            var query = String.Format("SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status],[GroupsId] FROM [dbo].[Poles] WHERE GroupsId = {0}", groupsId);
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, query, commandType: CommandType.Text);
 
             return poles;
             //using (var connection = _context.Database.GetDbConnection())

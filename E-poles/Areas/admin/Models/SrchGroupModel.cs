@@ -8,14 +8,9 @@ using System.Threading.Tasks;
 
 namespace E_poles.Areas.admin.Models
 {
-    public class SrchPolesModel : DtParameters
+    public class SrchGroupModel : DtParameters
     {
         public string KeySearch { get; set; }
-        public string SelectedStatus { get; set; }
         public string UserId { get; set; }
-        public string SelectedArea { get; set; }
-        public string SelectedStreet { get; set; }
-        public List<SelectListItem> AreaList { get; set; }
-        public List<SelectListItem> StreetList { get; set; }
     }
 }

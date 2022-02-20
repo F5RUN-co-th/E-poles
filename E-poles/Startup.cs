@@ -4,6 +4,7 @@ using E_poles.Data;
 using E_poles.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,11 @@ namespace E_poles
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            });
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -57,12 +63,19 @@ namespace E_poles
             services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
             services.ConfigureApplicationCookie(options =>
             {
-                // Cookie settings
                 options.ExpireTimeSpan = TimeSpan.FromDays(150);
-                options.LoginPath = "/Account/Login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
-                options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
-                options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
+                options.LoginPath = options.LoginPath.ToString().ToLowerInvariant();
+                options.LogoutPath = "/Account/Logout".ToLowerInvariant();
+                options.AccessDeniedPath = "/Account/AccessDenied".ToLowerInvariant();
+                options.ReturnUrlParameter = options.ReturnUrlParameter.ToString().ToLowerInvariant();
                 options.SlidingExpiration = true;
+
+                // Cookie settings
+                //options.ExpireTimeSpan = TimeSpan.FromDays(150);
+                //options.LoginPath = "/Account/Login"; // If the LoginPath is not set here, ASP.NET Core will default to /Account/Login
+                //options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here, ASP.NET Core will default to /Account/Logout
+                //options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is not set here, ASP.NET Core will default to /Account/AccessDenied
+                //options.SlidingExpiration = true;
             });
             services.Configure<SuperAdminDefaultOptions>(Configuration.GetSection("SuperAdminDefaultOptions"));
 
@@ -71,6 +84,7 @@ namespace E_poles
 
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IEpoleService, EpoleService>();
+            services.AddScoped<IGroupService, GroupService>();
 
             services.AddAutoMapper(typeof(MappingProfile));
         }

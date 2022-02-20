@@ -9,13 +9,42 @@
         <div class="widget-content-wrapper">
             @if (SignInManager.IsSignedIn(User))
             {
+                var cUser = await UserManager.GetUserAsync(User);
+                var roles = await UserManager.GetRolesAsync(cUser);
                 <div class="widget-content-left">
                     <div class="btn-group">
                         <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
                             <span class="pe-7s-user" style="font-size: 42px;"></span>
                         </a>
                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                            <a tabindex="0" class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">กลับไปหน้าแรก</a>
+                            @if (Context.Request.Path.Value.Contains("admin"))
+                            {
+                                <a tabindex="0" class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">กลับไปหน้าแรก</a>
+                            }
+                            else
+                            {
+                                @if (User.Identity.IsAuthenticated && (User.IsInRole("SuperAdministrator") || User.IsInRole("Administrator")))
+                                {
+                                    <a tabindex="0" class="dropdown-item" asp-area="Admin">Admin</a>
+                                }
+                                else
+                                {
+                                    var userInRole = await UserManager.IsInRoleAsync(cUser, "SuperAdministrator");
+                                    @if (userInRole)
+                                    {
+                                        <a tabindex="0" class="dropdown-item" asp-area="Admin">Admin</a>
+                                    }
+                                    else
+                                    {
+                                        userInRole = await UserManager.IsInRoleAsync(cUser, "Administrator");
+                                        if (userInRole)
+                                        {
+                                            <a tabindex="0" class="dropdown-item" asp-area="Admin">Admin</a>
+                                        }
+                                    }
+                                }
+
+                            }
                             <div tabindex="-1" class="dropdown-divider"></div>
                             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                                 <button type="submit" tabindex="0" class="dropdown-item">Logout</button>
@@ -28,10 +57,7 @@
                         @User.Identity.Name
                     </div>
                     <div class="widget-subheading">
-                        @{
-                            var cUser = await UserManager.GetUserAsync(User);
-                            var roles = await UserManager.GetRolesAsync(cUser);
-                        }
+
                         @roles.FirstOrDefault()
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using E_poles.Areas.admin.Models;
+using E_poles.Dal;
 using E_poles.Models.Pole;
 using E_poles.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace E_poles.Controllers
 {
     public class PolesController : Controller
     {
+        IGroupService _groupService;
         IEpoleService _epoleService;
         private readonly IMapper _mapper;
-        public PolesController(IEpoleService epoleService, IMapper mapper)
+        public PolesController(IGroupService groupService, IEpoleService epoleService, IMapper mapper)
         {
             _mapper = mapper;
+            _groupService = groupService;
             _epoleService = epoleService;
         }
 
@@ -38,10 +41,17 @@ namespace E_poles.Controllers
             }).ToList();
             return View(model);
         }
+        private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(string userId)
+        {
+            var userGroups = await _groupService.GetGroupByUserId(int.Parse(userId));
+
+            var result = await _epoleService.GetAll(userGroups.GroupsId);
+            return result;
+        }
 
         public async Task<IActionResult> GetDtPolesList([FromBody] SrchPolesModel model)
         {
-            var result = await _epoleService.GetAll();
+            var result = await GetAllPolesByGroupId(model.UserId);
 
             var poleList = _mapper.Map<IEnumerable<PoleListModel>>(result);
             if (!String.IsNullOrEmpty(model.KeySearch))
