@@ -4,10 +4,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var EPoles = function () {
-    function EPoles() {
-        _classCallCheck(this, EPoles);
-        this.dtList = $('#gv_poleslist');
+var Users = function () {
+    function Users() {
+        _classCallCheck(this, Users);
+        this.dtList = $('#gv_userslist');
         this.order = [[1, "desc"]];//<'domInput'>
         this.dom = "<'row'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-8'<'domInput dataTables_filter'>>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
         this.searching = false;
@@ -22,7 +22,7 @@ var EPoles = function () {
         i - Table information summary
         p - pagination control
      */
-    _createClass(EPoles, [{
+    _createClass(Users, [{
         key: 'init',
         value: function init() {
             var me = this;
@@ -67,35 +67,14 @@ var EPoles = function () {
                 }],
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
-                    { "data": "fullName", "name": "Name", "autoWidth": true },
-                    { "data": "latitude", "name": "Latitude", "autoWidth": true },
-                    { "data": "longitude", "name": "Longitude", "autoWidth": true },
-                    { "data": "area", "name": "Area", "autoWidth": true },
-                    { "data": "street", "name": "Street", "autoWidth": true },
-                    { "data": "description", "name": "Description", "autoWidth": true },
-                    { "data": "note", "name": "Note", "autoWidth": true },
-                    {
-                        className: "text-center",
-                        "data": "status",
-                        "render": function (data, row) {
-                            if (data) {
-                                return '<div class="badge badge-success">ใช้งาน</div>';
-                            }
-                            else {
-                                return '<div class="badge badge-danger">เสีย</div>';
-                            }
-                        }
-                    },
+                    { "data": "userName", "name": "Name", "autoWidth": true },
                     {
                         className: "text-center",
                         "data": "id",
                         "orderable": false,
                         "render": function (data, row) {
                             if (data) {
-                                return '<a href="#" title="ลบ" class="border-0 btn-transition btn btn-outline-danger del"><i class="fa fa-trash-alt"></i></a>';
-                            }
-                            else {
-                                return '<a title="ลบ" class="border-0 btn-transition btn btn-outline-danger del"><i class="fa fa-trash-alt"></i></a>';
+                                return '<a href=' + me.updateUrl + "/" + data + ' class="btn-shadow btn btn-info"><span class="btn-icon-wrapper"><i class="fa fa-edit fa-w-20"></i></span>แก้ไข</a>';
                             }
                         }
                     }
@@ -104,44 +83,10 @@ var EPoles = function () {
                     $("div.domInput").html($(".searchArea").removeAttr("hidden"));
                 }
             });
-
-            this.dt.on('click', 'a.del', function (e) {
-                var objDt = me.dt.row($(this).closest('tr')).data();
-                var obj = {};
-                obj["Id"] = objDt.id;
-                obj["Name"] = objDt.name;
-                obj["Latitude"] = objDt.latitude;
-                obj["Longitude"] = objDt.longitude;
-                obj["Area"] = objDt.area;
-                obj["Street"] = objDt.street;
-                obj["Note"] = objDt.note;
-                obj["Description"] = objDt.description;
-                obj["Status"] = objDt.status;
-                obj["UserId"] = me.userId.toString();
-                confirmDelete("คุณต้องการที่จะลบข้อมูลนี้หรือไม่?", function (event) {
-                    if (event) {
-                        $.ajax({
-                            type: 'POST',
-                            url: me.delUrl,
-                            data: JSON.stringify(obj),
-                            dataType: 'JSON',
-                            contentType: "application/json",
-                            success: function success(result) {
-                                successMsgAlert("ลบข้อมูลนี้สำเร็จ");
-                                setTimeout(function () { window.location.href = me.indexUrl }, 1000);
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                warningMsgAlert(thrownError);
-                            }
-                        });
-                    }
-                });
-
-            });
         }
     },
     ]);
 
 
-    return EPoles;
+    return Users;
 }();

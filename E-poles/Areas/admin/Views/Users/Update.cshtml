@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using E_poles.Dal
+@{
+    ViewData["Title"] = "Update Group";
+}
+@model UserViewModel
+@inject UserManager<User> UserManager
+<div class="app-page-title">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            <div class="page-title-subheading opacity-10">
+                <nav class="" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a>
+                                <i aria-hidden="true" class="fa fa-home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index">User Management</a>
+                        </li>
+                        <li class="active breadcrumb-item" aria-current="page">
+                            Update
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+@{
+    var cUser = await UserManager.GetUserAsync(User);
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <h5 class="card-title" id="headform">แก้ข้อมูล</h5>
+                <form asp-action="Update" method="post">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="UserId" value="@cUser.Id" type="hidden" />
+                    <div class="position-relative row form-group">
+                        <label asp-for="UserName" class="col-sm-2 col-form-label">UserName</label>
+                        <div class="col-sm-10">
+                            <input asp-for="UserName" class="form-control" />
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="Email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="PasswordHash" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Password" />
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <button type="submit" class="mt-1 btn btn-primary">ตกลง</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

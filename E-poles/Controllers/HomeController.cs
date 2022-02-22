@@ -30,15 +30,10 @@ namespace E_poles.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllPoles(int userId)
         {
-            return Ok(await GetAllPolesByGroupId(userId));
-        }
-
-        private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(int userId)
-        {
             var userGroups = await _groupService.GetGroupByUserId(userId);
 
             var result = await _epoleService.GetAll(userGroups.GroupsId);
-            return result;
+            return Ok(result);
         }
 
         public IActionResult Privacy() => View();

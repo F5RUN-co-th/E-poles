@@ -539,7 +539,7 @@ var EPoles = function () {
                     obj["Note"] = select_interaction.getFeatures().item(0).get("note");
                     obj["Description"] = select_interaction.getFeatures().item(0).get("description");
                     obj["Status"] = select_interaction.getFeatures().item(0).get("status");
-
+                    obj["UserId"] = me.userId.toString();
                     $.ajax({
                         type: "POST",
                         url: me.deletePoleUrl,
@@ -547,19 +547,16 @@ var EPoles = function () {
                         dataType: 'JSON',
                         contentType: "application/json",
                         success: function success(data) {
-                            if (data) {
+                            me.map.removeLayer(me.vectorLayer);
+                            me.vectorLayer = null;
 
-                                me.map.removeLayer(me.vectorLayer);
-                                me.vectorLayer = null;
-
-                                me.makeMarkers(data);
-                                if (me.overlay3 != undefined) {
-                                    me.overlay3.setPosition(undefined);
-                                }
-                                me.popupClickDel.blur();
-                                me.resetForm();
-                                me.doDrawEnd = false;
+                            me.makeMarkers(data);
+                            if (me.overlay3 != undefined) {
+                                me.overlay3.setPosition(undefined);
                             }
+                            me.popupClickDel.blur();
+                            me.resetForm();
+                            me.doDrawEnd = false;
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
                             console.log(error)

@@ -1,6 +1,7 @@
 using AutoMapper;
 using E_poles.Dal;
 using E_poles.Data;
+using E_poles.services.Services;
 using E_poles.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -85,7 +86,7 @@ namespace E_poles
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IEpoleService, EpoleService>();
             services.AddScoped<IGroupService, GroupService>();
-
+            services.AddScoped<IUserService, UserService>();
             services.AddAutoMapper(typeof(MappingProfile));
         }
 

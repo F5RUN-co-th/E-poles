@@ -466,7 +466,6 @@ function confirmDelete(massage, functional) {
         allowOutsideClick: false,
         closeOnClickOutside: false
     }).then(functional)
-
 }
 
 function downloadAlert(message) {

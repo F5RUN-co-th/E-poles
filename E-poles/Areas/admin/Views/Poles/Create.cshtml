@@ -166,7 +166,8 @@
     <script>
         var _form = new EPoles();
         $(document).ready(function () {
-            _form.getUrl = '@Url.Action("GetAllPoles")/'+@cUser.Id;
+            _form.getUrl = '@Url.Action("GetAllPoles")/?userId=' +@cUser.Id;
+            _form.userId = @cUser.Id;
             _form.createPoleUrl = '@Url.Action("CreatePoles")';
             _form.updatePoleUrl = '@Url.Action("UpdatePoles")';
             _form.deletePoleUrl = '@Url.Action("DeletePoles")';

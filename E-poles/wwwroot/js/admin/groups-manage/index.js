@@ -74,7 +74,7 @@ var Groups = function () {
                         "orderable": false,
                         "render": function (data, row) {
                             if (data) {
-                                return '<a href=' + me.updateUrl + "/" + data + ' class="btn-shadow btn btn-info"><span class="btn-icon-wrapper pr-2 opacity-7"><i class="fa fa-edit fa-w-20"></i></span>แก้ไข</a>';
+                                return '<a href=' + me.updateUrl + "/" + data + ' class="btn-shadow btn btn-info"><span class="btn-icon-wrapper"><i class="fa fa-edit fa-w-20"></i></span>แก้ไข</a>';
                             }
                         }
                     }

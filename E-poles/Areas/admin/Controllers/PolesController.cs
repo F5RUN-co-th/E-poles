@@ -84,17 +84,12 @@ namespace E_poles.Areas.admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPoles(string userId)
+        public async Task<IActionResult> GetAllPoles(int userId)
         {
-            return Ok(await GetAllPolesByGroupId(userId));
-        }
-
-        private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(string userId)
-        {
-            var userGroups = await _groupService.GetGroupByUserId(int.Parse(userId));
+            var userGroups = await _groupService.GetGroupByUserId(userId);
 
             var result = await _epoleService.GetAll(userGroups.GroupsId);
-            return result;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -112,7 +107,10 @@ namespace E_poles.Areas.admin.Controllers
                         model.Note = model.Note.Trim();
                     if (model.Description != null)
                         model.Description = model.Description.Trim();
+
+                    var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
                     var pole = _mapper.Map<Poles>(model);
+                    pole.GroupsId = userGroups.GroupsId;
                     var result = await _epoleService.CreateAsync(pole);
                     if (result != null)
                     {
@@ -152,7 +150,10 @@ namespace E_poles.Areas.admin.Controllers
                         model.Note = model.Note.Trim();
                     if (model.Description != null)
                         model.Description = model.Description.Trim();
+
+                    var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
                     var pole = _mapper.Map<Poles>(model);
+                    pole.GroupsId = userGroups.GroupsId;
                     var result = await _epoleService.UpdateAsync(pole);
                     if (result)
                     {
@@ -197,6 +198,14 @@ namespace E_poles.Areas.admin.Controllers
                 return Ok(ex.Message);
             }
             return Ok(data);
+        }
+
+        private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(string userId)
+        {
+            var userGroups = await _groupService.GetGroupByUserId(int.Parse(userId));
+
+            var result = await _epoleService.GetAll(userGroups.GroupsId);
+            return result;
         }
     }
 }

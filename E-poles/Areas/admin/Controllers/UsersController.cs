@@ -2,6 +2,8 @@
 using E_poles.Areas.admin.Models;
 using E_poles.Dal;
 using E_poles.Models.Group;
+using E_poles.Models.User;
+using E_poles.services.Services;
 using E_poles.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,19 +13,24 @@ using System.Threading.Tasks;
 
 namespace E_poles.Areas.admin.Controllers
 {
-    public class GroupsController : AdminBaseController
+    public class UsersController : AdminBaseController
     {
+        IUserService _userService;
         IGroupService _groupService;
         private readonly IMapper _mapper;
-        public GroupsController(IGroupService groupService, IMapper mapper)
+        public UsersController(IUserService userService, IGroupService groupService, IMapper mapper)
         {
             _mapper = mapper;
+            _userService = userService;
             _groupService = groupService;
         }
 
         public IActionResult Index() => View();
 
-        public IActionResult Create() => View();
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         public async Task<IActionResult> Update(int? id)
         {
@@ -31,46 +38,46 @@ namespace E_poles.Areas.admin.Controllers
             {
                 return NotFound();
             }
-            var grp = await _groupService.Get(id ?? 0);
-            return View(_mapper.Map<GroupViewModel>(grp));
+            var grp = await _userService.Get(id ?? 0);
+            return View(_mapper.Map<UserViewModel>(grp));
         }
 
-        public async Task<IActionResult> GetDtGroupsList([FromBody] SrchGroupModel model)
+        public async Task<IActionResult> GetDtUsersList([FromBody] SrchUserModel model)
         {
             var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
 
-            var result = await _groupService.GetAll(userGroups.GroupsId);
+            var result = await _userService.GetAll(userGroups.GroupsId);
 
-            var groupList = _mapper.Map<IEnumerable<GroupListModel>>(result);
+            var userLists = _mapper.Map<IEnumerable<UserListModel>>(result);
             if (!String.IsNullOrEmpty(model.KeySearch))
             {
-                groupList = groupList.Where(s => s.Name.ToLower().Contains(model.KeySearch.ToLower()));
+                userLists = userLists.Where(s => s.UserName.ToLower().Contains(model.KeySearch.ToLower()));
             }
 
-            int recordsTotal = groupList.Count();
-            var data = groupList.Skip(model.Start).Take(model.Length);
+            int recordsTotal = userLists.Count();
+            var data = userLists.Skip(model.Start).Take(model.Length);
             var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
             return Ok(jsonData);
         }
-
         [HttpPost]
-        public async Task<IActionResult> Create(GroupViewModel model)
+        public async Task<IActionResult> Create(UserViewModel model)
         {
             this.ModelState.Remove("Id");
             try
             {
                 if (ModelState.IsValid)
                 {
-                    model.Name = model.Name.Trim();
+                    model.Email = model.Email.Trim();
+                    model.UserName = model.UserName.Trim();
                     var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
-                    var allGroups = await _groupService.GetAll(userGroups.GroupsId);
-                    if (!allGroups.Any(s => s.Name.ToLower() == model.Name.ToLower()))
+                    var allUsers = await _userService.GetAll(userGroups.GroupsId);
+                    if (!allUsers.Any(s => s.UserName.ToLower() == model.UserName.ToLower()))
                     {
-                        var group = _mapper.Map<Groups>(model);
-                        var result = await _groupService.CreateAsync(group);
-                        if (result != null)
+                        var user = _mapper.Map<User>(model);
+                        var result = await _userService.CreateAsync(user, model.PasswordHash);
+                        if (result.Succeeded)
                         {
-                            return View("Update", _mapper.Map<GroupViewModel>(result));
+                            return View("Update", _mapper.Map<UserViewModel>(result));
                         }
                         else
                         {
@@ -80,7 +87,7 @@ namespace E_poles.Areas.admin.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, $"Group name {model.Name} already exists.");
+                        ModelState.AddModelError(string.Empty, $"User name {model.UserName} already exists.");
                         return View("Create", model);
                     }
                 }
@@ -98,23 +105,23 @@ namespace E_poles.Areas.admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(GroupViewModel model)
+        public async Task<IActionResult> Update(UserViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    model.Name = model.Name.Trim();
+                    model.UserName = model.UserName.Trim();
                     var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
-                    var allGroups = await _groupService.GetAll(userGroups.GroupsId);
-                    if (!allGroups.Any(s => s.Name.ToLower() == model.Name.ToLower() && model.Id != s.Id))
+                    var allUsers = await _userService.GetAll(userGroups.GroupsId);
+                    if (!allUsers.Any(s => s.UserName.ToLower() == model.UserName.ToLower() && model.Id != s.Id))
                     {
-                        var group = _mapper.Map<Groups>(model);
-                        var result = await _groupService.UpdateAsync(group);
+                        var user = _mapper.Map<User>(model);
+                        var result = await _userService.UpdateAsync(user);
                         if (result)
                         {
-                            var grp = await _groupService.Get(model.Id);
-                            return View("Update", _mapper.Map<GroupViewModel>(grp));
+                            var usr = await _userService.Get(model.Id);
+                            return View("Update", _mapper.Map<UserViewModel>(usr));
                         }
                         else
                         {
@@ -124,7 +131,7 @@ namespace E_poles.Areas.admin.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, $"Group name {model.Name} already exists.");
+                        ModelState.AddModelError(string.Empty, $"User name {model.UserName} already exists.");
                         return View("Update", model);
                     }
                 }
@@ -139,33 +146,6 @@ namespace E_poles.Areas.admin.Controllers
 
             }
             return View("Update", model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete([FromBody] GroupViewModel data)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    //var pole = _mapper.Map<Poles>(data);
-                    //var result = await _groupService.DeleteAsync(pole);
-                    //if (result)
-                    //{
-                    //    return Ok(await _groupService.GetAll());
-                    //}
-                    //else
-                    //{
-                    //    ModelState.AddModelError(string.Empty, "Invalid request input.");
-                    //    return View("Create", data);
-                    //}
-                }
-            }
-            catch (System.Exception ex)
-            {
-                return Ok(ex.Message);
-            }
-            return Ok(data);
         }
     }
 }
