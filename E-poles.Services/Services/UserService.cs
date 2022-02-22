@@ -26,12 +26,11 @@ namespace E_poles.services.Services
             var user = await _context.Users.FirstOrDefaultAsync(f => f.Id == Id);
             return user;
         }
-        public async Task<bool> UpdateAsync(User model)
+        public async Task<IdentityResult> UpdateAsync(User model)
         {
-            _context.Users.Update(model);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.UpdateAsync(model);
 
-            return true;
+            return result;
         }
         public async Task<IdentityResult> CreateAsync(User model, string password)
         {
@@ -57,10 +56,34 @@ namespace E_poles.services.Services
             }
             else
             {
-                condition = $"Id != {(int)RoleEnum.SuperAdministrator}";
+                condition = $"GroupsId = {groupsId}";
             }
-            var query = String.Format(@"SELECT [Id],[UserName],[NormalizedUserName],[Email],[NormalizedEmail],[EmailConfirmed],[PasswordHash],[SecurityStamp],[ConcurrencyStamp],[PhoneNumber],[PhoneNumberConfirmed],[TwoFactorEnabled],[LockoutEnd],[LockoutEnabled],[AccessFailedCount] FROM [dbo].[Users]
- WHERE {0}", condition);
+            var query = String.Format(@"SELECT [Id],[UserName],[NormalizedUserName],[Email],[NormalizedEmail],[EmailConfirmed],[PasswordHash],[SecurityStamp],[ConcurrencyStamp],[PhoneNumber],[PhoneNumberConfirmed],[TwoFactorEnabled],[LockoutEnd],[LockoutEnabled],[AccessFailedCount] 
+FROM [dbo].[Users] u
+JOIN [E-poles].[dbo].[UserGroups] ug ON u.Id = ug.UserId
+WHERE {0}", condition);
+            var users = await SqlMapper.QueryAsync<User>(connection, query, commandType: CommandType.Text);
+
+            return users;
+        }
+
+        public async Task<IEnumerable<User>> GetAllFilterByRole(int groupsId, int role)
+        {
+            var connection = _context.Database.GetDbConnection();
+            string condition;
+            if (groupsId == (int)RoleEnum.SuperAdministrator)
+            {
+                condition = "1=1";
+            }
+            else
+            {
+                condition = $"GroupsId = {groupsId}";
+            }
+            var query = String.Format(@"SELECT [Id],[UserName],[NormalizedUserName],[Email],[NormalizedEmail],[EmailConfirmed],[PasswordHash],[SecurityStamp],[ConcurrencyStamp],[PhoneNumber],[PhoneNumberConfirmed],[TwoFactorEnabled],[LockoutEnd],[LockoutEnabled],[AccessFailedCount] 
+FROM [dbo].[Users] u
+JOIN [E-poles].[dbo].[UserGroups] ug ON u.Id = ug.UserId
+JOIN [E-poles].[dbo].UserRoles ur ON u.Id = ur.UserId
+WHERE {0} and RoleId = {1}", condition, role);
             var users = await SqlMapper.QueryAsync<User>(connection, query, commandType: CommandType.Text);
 
             return users;

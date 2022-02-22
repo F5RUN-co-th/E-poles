@@ -5,7 +5,9 @@ using E_poles.Models.Group;
 using E_poles.Models.User;
 using E_poles.services.Services;
 using E_poles.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,19 +19,37 @@ namespace E_poles.Areas.admin.Controllers
     {
         IUserService _userService;
         IGroupService _groupService;
+        private IPasswordHasher<User> _passwordHasher;
+        private IPasswordValidator<User> _passwordValidator;
+        private readonly IRoles _roles;
         private readonly IMapper _mapper;
-        public UsersController(IUserService userService, IGroupService groupService, IMapper mapper)
+        private readonly UserManager<User> _userManager;
+        public UsersController(IUserService userService, IPasswordHasher<User> passwordHash, IPasswordValidator<User> passwordVal, UserManager<User> userManager, IRoles roles, IGroupService groupService, IMapper mapper)
         {
             _mapper = mapper;
+            _roles = roles;
+            _passwordHasher = passwordHash;
+            _passwordValidator = passwordVal;
+            _userManager = userManager;
             _userService = userService;
             _groupService = groupService;
         }
 
         public IActionResult Index() => View();
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var cUser = await _userManager.GetUserAsync(User);
+            var model = new UserViewModel();
+            var userGroups = await _groupService.GetGroupByUserId(cUser.Id);
+
+            var groupList = await _groupService.GetAll(userGroups.GroupsId);
+            model.GroupsList = groupList.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToList();
+            return View(model);
         }
 
         public async Task<IActionResult> Update(int? id)
@@ -38,8 +58,25 @@ namespace E_poles.Areas.admin.Controllers
             {
                 return NotFound();
             }
+            var userGroups = await _groupService.GetGroupByUserId(id ?? 0);
             var grp = await _userService.Get(id ?? 0);
-            return View(_mapper.Map<UserViewModel>(grp));
+            UserViewModel model = await ToUserModel(userGroups, grp);
+            return View(model);
+        }
+
+        private async Task<UserViewModel> ToUserModel(UserGroups userGroups, User usr)
+        {
+            var roleId = await _roles.Get(usr.Id);
+            var model = _mapper.Map<UserViewModel>(usr);
+            var groupList = await _groupService.GetAll(userGroups.GroupsId);
+            model.GroupsList = groupList.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name
+            }).ToList();
+            model.SelectedGroup = userGroups.GroupsId.ToString();
+            model.SelectedRole = roleId.ToString();
+            return model;
         }
 
         public async Task<IActionResult> GetDtUsersList([FromBody] SrchUserModel model)
@@ -77,7 +114,16 @@ namespace E_poles.Areas.admin.Controllers
                         var result = await _userService.CreateAsync(user, model.PasswordHash);
                         if (result.Succeeded)
                         {
-                            return View("Update", _mapper.Map<UserViewModel>(result));
+                            UserGroups usergrp = new UserGroups
+                            {
+                                UserId = user.Id,
+                                GroupsId = int.Parse(model.SelectedGroup)
+                            };
+                            await _groupService.CreateUserGroupsAsync(usergrp);
+                            await _roles.AddToRoles(user.Id, (RoleEnum)int.Parse(model.SelectedRole));
+
+                            UserViewModel newUser = await ToUserModel(userGroups, user);
+                            return View("Update", newUser);
                         }
                         else
                         {
@@ -111,17 +157,46 @@ namespace E_poles.Areas.admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    model.UserName = model.UserName.Trim();
-                    var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
-                    var allUsers = await _userService.GetAll(userGroups.GroupsId);
-                    if (!allUsers.Any(s => s.UserName.ToLower() == model.UserName.ToLower() && model.Id != s.Id))
+                    var user = await _userManager.FindByIdAsync(model.Id.ToString());
+                    user.Email = model.Email.Trim();
+                    user.UserName = model.UserName.Trim();
+                    //var user = _mapper.Map<User>(model);
+                    IdentityResult validPass = null;
+                    if (!string.IsNullOrEmpty(model.PasswordHash))
                     {
-                        var user = _mapper.Map<User>(model);
-                        var result = await _userService.UpdateAsync(user);
-                        if (result)
+                        validPass = await _passwordValidator.ValidateAsync(_userManager, user, model.PasswordHash);
+                        if (validPass.Succeeded)
+                        { user.PasswordHash = _passwordHasher.HashPassword(user, model.PasswordHash); }
+                        else
                         {
-                            var usr = await _userService.Get(model.Id);
-                            return View("Update", _mapper.Map<UserViewModel>(usr));
+                            foreach (IdentityError error in validPass.Errors)
+                                ModelState.AddModelError("", error.Description);
+                        }
+                    }
+                    else { ModelState.AddModelError("", "Password cannot be empty"); }
+
+                    var makerUsrGps = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
+                    var allUsers = await _userService.GetAll(makerUsrGps.GroupsId);
+                    if (!allUsers.Any(s => s.UserName.ToLower() == user.UserName.ToLower() && user.Id != s.Id))
+                    {
+                        var result = await _userService.UpdateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            var userGroups = await _groupService.GetGroupByUserId(user.Id);
+                            await _groupService.DeleteUserGroupsAsync(userGroups);
+                            UserGroups newUsrGroup = new UserGroups
+                            {
+                                UserId = user.Id,
+                                GroupsId = int.Parse(model.SelectedGroup)
+                            };
+                            await _groupService.CreateUserGroupsAsync(newUsrGroup);
+
+                            var role = await _userManager.GetRolesAsync(user);
+                            await _roles.RemoveFromRoles(user.Id, role);
+                            await _roles.AddToRoles(user.Id, (RoleEnum)int.Parse(model.SelectedRole));
+
+                            UserViewModel newUser = await ToUserModel(userGroups, user);
+                            return View("Update", newUser);
                         }
                         else
                         {

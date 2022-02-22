@@ -63,6 +63,26 @@
                             <span asp-validation-for="PasswordHash" class="text-danger"></span>
                         </div>
                     </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="SelectedGroup" class="col-sm-2 col-form-label">กลุ่ม/แขวง</label>
+                        <div class="col-sm-10">
+                            <select asp-for="SelectedGroup" asp-items="Model.GroupsList" class="form-control form-control-sm">
+                                <option value="" selected>กลุ่ม/แขวง</option>
+                            </select>
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <span asp-validation-for="SelectedGroup" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="position-relative row form-group">
+                        <label asp-for="SelectedRole" class="col-sm-2 col-form-label">Role</label>
+                        <div class="col-sm-10">
+                            <select asp-for="SelectedRole" asp-items="Html.GetEnumSelectList<RoleEnum>()" class="form-control form-control-sm">
+                                <option value="" selected>Role</option>
+                            </select>
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                        </div>
+                    </div>
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <button type="submit" class="mt-1 btn btn-primary">ตกลง</button>
                 </form>

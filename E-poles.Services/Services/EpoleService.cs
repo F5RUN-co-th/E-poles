@@ -42,7 +42,16 @@ namespace E_poles.Services
         public async Task<IEnumerable<Poles>> GetAll(int groupsId)
         {
             var connection = _context.Database.GetDbConnection();
-            var query = String.Format("SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status],[GroupsId] FROM [dbo].[Poles] WHERE GroupsId = {0}", groupsId);
+            string condition;
+            if (groupsId == (int)RoleEnum.SuperAdministrator)
+            {
+                condition = "1=1";
+            }
+            else
+            {
+                condition = $"GroupsId = {groupsId}";
+            }
+            var query = String.Format("SELECT [Id],[Name],[Latitude],[Longitude],[Area],[Street],[Note],[Description],[Status],[GroupsId] FROM [dbo].[Poles] WHERE {0}", condition);
             var poles = await SqlMapper.QueryAsync<Poles>(connection, query, commandType: CommandType.Text);
 
             return poles;
@@ -55,17 +64,37 @@ namespace E_poles.Services
 
         }
 
-        public async Task<IEnumerable<Poles>> GetAllArea()
+        public async Task<IEnumerable<Poles>> GetAllArea(int groupsId)
         {
             var connection = _context.Database.GetDbConnection();
-            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Area] FROM [dbo].[Poles] GROUP BY Area;", commandType: CommandType.Text);
+            string condition;
+            if (groupsId == (int)RoleEnum.SuperAdministrator)
+            {
+                condition = "1=1";
+            }
+            else
+            {
+                condition = $"GroupsId = {groupsId}";
+            }
+            var query = String.Format("SELECT [Area] FROM [dbo].[Poles] WHERE {0} GROUP BY Area;", condition);
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, query, commandType: CommandType.Text);
 
             return poles;
         }
-        public async Task<IEnumerable<Poles>> GetAllStreet()
+        public async Task<IEnumerable<Poles>> GetAllStreet(int groupsId)
         {
             var connection = _context.Database.GetDbConnection();
-            var poles = await SqlMapper.QueryAsync<Poles>(connection, "SELECT [Street] FROM [dbo].[Poles] GROUP BY Street;", commandType: CommandType.Text);
+            string condition;
+            if (groupsId == (int)RoleEnum.SuperAdministrator)
+            {
+                condition = "1=1";
+            }
+            else
+            {
+                condition = $"GroupsId = {groupsId}";
+            }
+            var query = String.Format("SELECT [Street] FROM [dbo].[Poles] WHERE {0} GROUP BY Street;", condition);
+            var poles = await SqlMapper.QueryAsync<Poles>(connection, query, commandType: CommandType.Text);
 
             return poles;
         }

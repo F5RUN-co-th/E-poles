@@ -55,7 +55,7 @@ namespace E_poles.Services
             }
             else
             {
-                condition = $"Id != {(int)RoleEnum.SuperAdministrator}";
+                condition = $"Id = {groupsId}";
             }
             var query = String.Format("SELECT [Id],[Name] FROM [E-poles].[dbo].[Groups] WHERE {0}", condition);
             var groups = await SqlMapper.QueryAsync<Groups>(connection, query, commandType: CommandType.Text);
@@ -67,6 +67,18 @@ namespace E_poles.Services
         {
             var userGroups = await _context.UserGroups.FirstOrDefaultAsync(f => f.UserId == userId);
             return userGroups;
+        }
+
+        public async Task CreateUserGroupsAsync(UserGroups usergrp)
+        {
+            await _context.UserGroups.AddAsync(usergrp);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserGroupsAsync(UserGroups usergrp)
+        {
+            _context.UserGroups.Remove(usergrp);
+            await _context.SaveChangesAsync();
         }
     }
 }

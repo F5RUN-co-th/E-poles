@@ -12,5 +12,7 @@ namespace E_poles.Services
         Task<bool> DeleteAsync(Groups model);
         Task<Groups> CreateAsync(Groups model);
         Task<bool> UpdateAsync(Groups model);
+        Task CreateUserGroupsAsync(UserGroups usergrp);
+        Task DeleteUserGroupsAsync(UserGroups usergrp);
     }
 }

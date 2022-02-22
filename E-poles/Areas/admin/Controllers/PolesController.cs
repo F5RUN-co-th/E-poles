@@ -4,6 +4,7 @@ using E_poles.Dal;
 using E_poles.Models.Datables;
 using E_poles.Models.Pole;
 using E_poles.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -17,24 +18,28 @@ namespace E_poles.Areas.admin.Controllers
     {
         IGroupService _groupService;
         IEpoleService _epoleService;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        public PolesController(IGroupService groupService, IEpoleService epoleService, IMapper mapper)
+        public PolesController(IGroupService groupService, UserManager<User> userManager, IEpoleService epoleService, IMapper mapper)
         {
             _mapper = mapper;
+            _userManager = userManager;
             _groupService = groupService;
             _epoleService = epoleService;
         }
 
         public async Task<IActionResult> Index()
         {
+            var cUser = await _userManager.GetUserAsync(User);
+            var userGroups = await _groupService.GetGroupByUserId(cUser.Id);
             var model = new SrchPolesModel();
-            var areaList = await _epoleService.GetAllArea();
+            var areaList = await _epoleService.GetAllArea(userGroups.GroupsId);
             model.AreaList = areaList.Select(x => new SelectListItem
             {
                 Value = x.Area,
                 Text = x.Area
             }).ToList();
-            var streetList = await _epoleService.GetAllStreet();
+            var streetList = await _epoleService.GetAllStreet(userGroups.GroupsId);
             model.StreetList = streetList.Select(x => new SelectListItem
             {
                 Value = x.Street,

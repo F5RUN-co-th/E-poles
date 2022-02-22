@@ -10,9 +10,10 @@ namespace E_poles.services.Services
     public interface IUserService
     {
         Task<User> Get(int Id);
-        Task<bool> UpdateAsync(User model);
+        Task<IdentityResult> UpdateAsync(User model);
         Task<IdentityResult> CreateAsync(User model, string password);
         Task<bool> DeleteAsync(User model);
         Task<IEnumerable<User>> GetAll(int groupsId);
+        Task<IEnumerable<User>> GetAllFilterByRole(int groupsId, int role);
     }
 }
