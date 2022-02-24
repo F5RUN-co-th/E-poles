@@ -59,23 +59,23 @@ namespace E_poles.Areas.admin.Controllers
             {
                 poleList = poleList.Where(s =>
                                     s.FullName.ToLower().Contains(model.KeySearch.ToLower()) ||
-                                    s.Name.ToLower().Contains(model.KeySearch.ToLower()) ||
-                                    s.Area.Contains(model.KeySearch) ||
-                                    s.Street.Contains(model.KeySearch) ||
-                                    s.Note.ToLower().Contains(model.KeySearch.ToLower()) ||
-                                    s.Description.ToLower().Contains(model.KeySearch.ToLower()));
+                                    (s.Name != null && s.Name.ToLower().Contains(model.KeySearch.ToLower())) ||
+                                    (s.Area != null && s.Area.Contains(model.KeySearch)) ||
+                                    (s.Street != null && s.Street.Contains(model.KeySearch)) ||
+                                    (s.Note != null && s.Note.ToLower().Contains(model.KeySearch.ToLower())) ||
+                                    (s.Description != null && s.Description.ToLower().Contains(model.KeySearch.ToLower()))
+                                    );
             }
             if (!String.IsNullOrEmpty(model.SelectedArea))
             {
                 poleList = poleList.Where(s =>
-                                    s.FullName.Contains(model.SelectedArea) ||
-                                    s.Area.Contains(model.SelectedArea));
+                                     (s.Area != null && s.Area.Contains(model.KeySearch))
+                                    );
             }
             if (!String.IsNullOrEmpty(model.SelectedStreet))
             {
                 poleList = poleList.Where(s =>
-                                    s.FullName.Contains(model.SelectedStreet) ||
-                                    s.Street.Contains(model.SelectedStreet));
+                                    (s.Street != null && s.Street.Contains(model.KeySearch)));
             }
             if (!String.IsNullOrEmpty(model.SelectedStatus))
             {
