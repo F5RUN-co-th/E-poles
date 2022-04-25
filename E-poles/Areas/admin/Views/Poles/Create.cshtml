@@ -45,10 +45,10 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-action="Index">Pole Management</a>
+                            <a asp-action="Index">Data Management</a>
                         </li>
                         <li class="active breadcrumb-item" aria-current="page">
-                            Management
+                            Map Editing
                         </li>
                     </ol>
                 </nav>
@@ -169,6 +169,7 @@
             _form.getUrl = '@Url.Action("GetAllPoles")/?userId=' +@cUser.Id;
             _form.userId = @cUser.Id;
             _form.createPoleUrl = '@Url.Action("CreatePoles")';
+            _form.lastareaUrl = '@Url.Action("GetLastStreetArea")/?userId=' +@cUser.Id;
             _form.updatePoleUrl = '@Url.Action("UpdatePoles")';
             _form.deletePoleUrl = '@Url.Action("DeletePoles")';
             _form.init();

@@ -67,7 +67,7 @@ var EPoles = function () {
                 }],
                 "columns": [
                     { "data": "id", "name": "Id", "autoWidth": true },
-                    { "data": "fullName", "name": "Name", "autoWidth": true },
+                    { "data": "name", "name": "Name", "autoWidth": true },
                     { "data": "latitude", "name": "Latitude", "autoWidth": true },
                     { "data": "longitude", "name": "Longitude", "autoWidth": true },
                     { "data": "area", "name": "Area", "autoWidth": true },

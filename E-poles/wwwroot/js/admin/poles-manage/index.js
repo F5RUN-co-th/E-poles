@@ -65,16 +65,18 @@ var EPoles = function () {
                     "visible": false,
                     "searchable": false
                 }],
+                "autoWidth": false,
                 "columns": [
-                    { "data": "id", "name": "Id", "autoWidth": true },
-                    { "data": "fullName", "name": "Name", "autoWidth": true },
-                    { "data": "latitude", "name": "Latitude", "autoWidth": true },
-                    { "data": "longitude", "name": "Longitude", "autoWidth": true },
-                    { "data": "area", "name": "Area", "autoWidth": true },
-                    { "data": "street", "name": "Street", "autoWidth": true },
-                    { "data": "description", "name": "Description", "autoWidth": true },
-                    { "data": "note", "name": "Note", "autoWidth": true },
+                    { "data": "id", "name": "Id", "width": "4%" },
+                    { "data": "name", "name": "Name", "width": "5%" },
+                    { "data": "latitude", "name": "Latitude", "width": "3%" },
+                    { "data": "longitude", "name": "Longitude", "width": "3%" },
+                    { "data": "area", "name": "Area", "width": "5%" },
+                    { "data": "street", "name": "Street", "width": "5%" },
+                    { "data": "description", "name": "Description", "width": "25%" },
+                    { "data": "note", "name": "Note", "width": "25%" },
                     {
+                        "width": "10%",
                         className: "text-center",
                         "data": "status",
                         "render": function (data, row) {
@@ -86,7 +88,22 @@ var EPoles = function () {
                             }
                         }
                     },
+                    { "data": "usersUserName", "name": "UpdateBy", "width": "5%" },
                     {
+                        "width": "5%",
+                        className: "text-center",
+                        "data": "updatedAt",
+                        "render": function (data, row) {
+                            if (new Date(data).getUTCFullYear() === 0) {
+                                return '';
+                            }
+                            else {
+                                return new Date(data).toLocaleString();
+                            }
+                        }
+                    },
+                    {
+                        "width": "10%",
                         className: "text-center",
                         "data": "id",
                         "orderable": false,
@@ -138,6 +155,89 @@ var EPoles = function () {
                 });
 
             });
+
+            $('#gv_poleslist tbody').on('click', 'tr', function () {
+                if (!$(this).find("button").length) {
+                    var col5 = $(this).find("td:eq(5)");
+                    var col6 = $(this).find("td:eq(6)");
+                    var col7 = $(this).find("td:eq(7)");
+                    var col10 = $(this).find("td:eq(10)");
+
+                    if (!$(col5).hasClass("td-button")) {
+                        var text = $(col5).text();
+                        $(col5).html('<input class="form-control form-control-sm" type="text" value="' + text + '">')
+                    }
+                    else
+                        $(this).html('')
+
+                    if (!$(col6).hasClass("td-button")) {
+                        var text = $(col6).text();
+                        $(col6).html('<input class="form-control form-control-sm" type="text" value="' + text + '">')
+                    }
+                    else
+                        $(this).html('')
+
+                    if (!$(col7).hasClass("td-button")) {
+                        var text = $(col7).text();
+                        var selectInput = `<select asp-for="Status" class="form-control form-control-sm">
+                                <option value=true>ใช้งาน</option>
+                                <option value=false>เสีย</option>
+                            </select>`;
+                        $(col7).html(selectInput)
+                    }
+                    else
+                        $(this).html('')
+
+                    var delHtml = $(col10).html();
+                    $(col10).html('<button type="button" id="btnsubmit" class="mt-1 btn btn-primary button-save">บันทึก</button>' + delHtml)
+                }
+            });
+
+            this.dt.on('click', '.button-save', function (e) {
+                var objDt = me.dt.row($(this).closest('tr')).data();
+                var col5 = $(this).parent().parent().find("td:eq(5)").find("input").val();
+                objDt.description = col5;
+                var col6 = $(this).parent().parent().find("td:eq(6)").find("input").val();
+                objDt.note = col6;
+                var col7 = $(this).parent().parent().find("td:eq(7)").find("select").val();
+                objDt.status = col7;
+                var obj = {};
+                obj["Id"] = objDt.id;
+                obj["Name"] = objDt.name;
+                obj["Latitude"] = objDt.latitude;
+                obj["Longitude"] = objDt.longitude;
+                obj["Area"] = objDt.area;
+                obj["Street"] = objDt.street;
+                obj["Note"] = objDt.note;
+                obj["Description"] = objDt.description;
+                obj["Status"] = JSON.parse(objDt.status);
+                obj["UserId"] = me.userId.toString();
+                $.ajax({
+                    type: 'POST',
+                    url: me.updatePoleUrl,
+                    data: JSON.stringify(obj),
+                    dataType: 'JSON',
+                    contentType: "application/json",
+                    success: function success(result) {
+                        me.dt.ajax.reload(function (json) {
+                        });
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        warningMsgAlert(thrownError);
+                    }
+                });
+            });
+
+            //$(document).on("click", ".button-save", function () {
+            //    var tr = $(this).parent().parent();
+            //    tr.find("td").each(function () {
+            //        if (!$(this).hasClass("td-button")) {
+            //            var text = $(this).find("input").val();
+            //            $(this).text(text)
+            //        } else
+            //            $(this).html('');
+            //    })
+            //})
         }
     },
     ]);

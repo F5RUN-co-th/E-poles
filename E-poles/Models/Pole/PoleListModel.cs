@@ -8,13 +8,13 @@ namespace E_poles.Models.Pole
     public class PoleListModel
     {
         public int Id { get; set; }
-        public string FullName
-        {
-            get
-            {
-                return Street + " " + Area + " " + Name;
-            }
-        }
+        //public string FullName
+        //{
+        //    get
+        //    {
+        //        return Street + " " + Area + " " + Name;
+        //    }
+        //}
 
         public string Name { get; set; }
         public decimal Latitude { get; set; }
@@ -24,5 +24,9 @@ namespace E_poles.Models.Pole
         public string Note { get; set; }
         public string Description { get; set; }
         public bool Status { get; set; }
+
+        public string UsersUserName { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

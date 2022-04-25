@@ -52,40 +52,47 @@ namespace E_poles.Areas.admin.Controllers
 
         public async Task<IActionResult> GetDtPolesList([FromBody] SrchPolesModel model)
         {
-            var result = await GetAllPolesByGroupId(model.UserId);
+            try
+            {
+                var result = await GetAllPolesByGroupId(model.UserId);
 
-            var poleList = _mapper.Map<IEnumerable<PoleListModel>>(result);
-            if (!String.IsNullOrEmpty(model.KeySearch))
-            {
-                poleList = poleList.Where(s =>
-                                    s.FullName.ToLower().Contains(model.KeySearch.ToLower()) ||
-                                    (s.Name != null && s.Name.ToLower().Contains(model.KeySearch.ToLower())) ||
-                                    (s.Area != null && s.Area.Contains(model.KeySearch)) ||
-                                    (s.Street != null && s.Street.Contains(model.KeySearch)) ||
-                                    (s.Note != null && s.Note.ToLower().Contains(model.KeySearch.ToLower())) ||
-                                    (s.Description != null && s.Description.ToLower().Contains(model.KeySearch.ToLower()))
-                                    );
+                var poleList = _mapper.Map<IEnumerable<PoleListModel>>(result);
+                if (!String.IsNullOrEmpty(model.SelectedArea))
+                {
+                    poleList = poleList.Where(s =>
+                                         (s.Area != null && s.Area.Contains(model.SelectedArea))
+                                        );
+                }
+                if (!String.IsNullOrEmpty(model.SelectedStreet))
+                {
+                    poleList = poleList.Where(s =>
+                                        (s.Street != null && s.Street.Contains(model.SelectedStreet)));
+                }
+                if (!String.IsNullOrEmpty(model.SelectedStatus))
+                {
+                    var _status = Convert.ToBoolean(int.Parse(model.SelectedStatus));
+                    poleList = poleList.Where(w => w.Status == _status);
+                }
+                if (!String.IsNullOrEmpty(model.KeySearch))
+                {
+                    poleList = poleList.Where(s =>
+                                        (s.Name != null && s.Name.ToLower().Contains(model.KeySearch.ToLower())) ||
+                                        (s.Area != null && s.Area.Contains(model.KeySearch)) ||
+                                        (s.Street != null && s.Street.Contains(model.KeySearch)) ||
+                                        (s.Note != null && s.Note.ToLower().Contains(model.KeySearch.ToLower())) ||
+                                        (s.Description != null && s.Description.ToLower().Contains(model.KeySearch.ToLower()))
+                                        );
+                }
+
+                int recordsTotal = poleList.Count();
+                var data = poleList.Skip(model.Start).Take(model.Length);
+                var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+                return Ok(jsonData);
             }
-            if (!String.IsNullOrEmpty(model.SelectedArea))
+            catch (Exception ex)
             {
-                poleList = poleList.Where(s =>
-                                     (s.Area != null && s.Area.Contains(model.KeySearch))
-                                    );
+                return Ok();
             }
-            if (!String.IsNullOrEmpty(model.SelectedStreet))
-            {
-                poleList = poleList.Where(s =>
-                                    (s.Street != null && s.Street.Contains(model.KeySearch)));
-            }
-            if (!String.IsNullOrEmpty(model.SelectedStatus))
-            {
-                var _status = Convert.ToBoolean(int.Parse(model.SelectedStatus));
-                poleList = poleList.Where(w => w.Status == _status);
-            }
-            int recordsTotal = poleList.Count();
-            var data = poleList.Skip(model.Start).Take(model.Length);
-            var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
-            return Ok(jsonData);
         }
 
         [HttpGet]
@@ -94,6 +101,15 @@ namespace E_poles.Areas.admin.Controllers
             var userGroups = await _groupService.GetGroupByUserId(userId);
 
             var result = await _epoleService.GetAll(userGroups.GroupsId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLastStreetArea(int userId)
+        {
+            var userGroups = await _groupService.GetGroupByUserId(userId);
+
+            var result = await _epoleService.GetLast(userGroups.GroupsId);
             return Ok(result);
         }
 
@@ -113,9 +129,14 @@ namespace E_poles.Areas.admin.Controllers
                     if (model.Description != null)
                         model.Description = model.Description.Trim();
 
-                    var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
+                    int userId = int.Parse(model.UserId);
+                    var userGroups = await _groupService.GetGroupByUserId(userId);
                     var pole = _mapper.Map<Poles>(model);
                     pole.GroupsId = userGroups.GroupsId;
+                    pole.CreatedAt = DateTime.Now;
+                    pole.CreatedBy = userId;
+                    pole.UpdatedAt = DateTime.Now;
+                    pole.UpdatedBy = userId;
                     var result = await _epoleService.CreateAsync(pole);
                     if (result != null)
                     {
@@ -156,9 +177,52 @@ namespace E_poles.Areas.admin.Controllers
                     if (model.Description != null)
                         model.Description = model.Description.Trim();
 
-                    var userGroups = await _groupService.GetGroupByUserId(int.Parse(model.UserId));
+                    int userId = int.Parse(model.UserId);
+                    var userGroups = await _groupService.GetGroupByUserId(userId);
                     var pole = _mapper.Map<Poles>(model);
                     pole.GroupsId = userGroups.GroupsId;
+                    pole.UpdatedAt = DateTime.Now;
+                    pole.UpdatedBy = userId;
+                    var result = await _epoleService.UpdateAsync(pole);
+                    if (result)
+                    {
+                        return Ok(await GetAllPolesByGroupId(model.UserId));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid request input.");
+                        return View("Create", model);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+
+            }
+            return View("Create", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDtPoles([FromBody] PoleViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    model.Name = model.Name.Trim();
+                    model.Area = model.Area.Trim();
+                    model.Street = model.Street.Trim();
+                    if (model.Note != null)
+                        model.Note = model.Note.Trim();
+                    if (model.Description != null)
+                        model.Description = model.Description.Trim();
+
+                    int userId = int.Parse(model.UserId);
+                    var userGroups = await _groupService.GetGroupByUserId(userId);
+                    var pole = _mapper.Map<Poles>(model);
+                    pole.GroupsId = userGroups.GroupsId;
+                    pole.UpdatedAt = DateTime.Now;
+                    pole.UpdatedBy = userId;
                     var result = await _epoleService.UpdateAsync(pole);
                     if (result)
                     {

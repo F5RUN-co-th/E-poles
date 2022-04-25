@@ -6,6 +6,7 @@ namespace E_poles.Services
 {
     public interface IEpoleService
     {
+        Task<IEnumerable<Poles>> GetLast(int groupsId);
         Task<IEnumerable<Poles>> GetAll(int groupsId);
         Task<IEnumerable<Poles>> GetAllArea(int groupsId);
         Task<IEnumerable<Poles>> GetAllStreet(int groupsId);

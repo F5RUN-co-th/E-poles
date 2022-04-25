@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace E_poles.Dal
 {
     public class Poles
@@ -15,7 +16,14 @@ namespace E_poles.Dal
         public string Description { get; set; }
         public bool Status { get; set; }
 
+        public User Users { get; set; }
+
         public int GroupsId { get; set; }
         public Groups Groups { get; set; }
+
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public int? CreatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
     }
 }

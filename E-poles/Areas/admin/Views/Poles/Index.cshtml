@@ -17,7 +17,7 @@
                             </a>
                         </li>
                         <li class="active breadcrumb-item" aria-current="page">
-                            Pole Management
+                            Data Management
                         </li>
                     </ol>
                 </nav>
@@ -29,7 +29,7 @@
                     <span class="btn-icon-wrapper pr-2 opacity-7">
                         <i class="fa fa-edit fa-w-20"></i>
                     </span>
-                    Management
+                    Map Editing
                 </a>
             </div>
         </div>
@@ -76,7 +76,7 @@
                         <button id="btn_search" type="button" class="mb-2 mr-2 btn btn-shadow btn-info"><i class="pe-7s-search"></i></button>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_poleslist">
+                        <table cellspacing="0" width="100%" class="align-middle mb-0 table table-hover table-striped table-bordered dataTable dtr-inline" id="gv_poleslist">
                             <thead>
                                 <tr>
                                     <th>Id</th>
@@ -86,8 +86,10 @@
                                     <th>Area</th>
                                     <th>Street</th>
                                     <th>Description</th>
-                                    <th>Note</th>
+                                    <th>Note and Data</th>
                                     <th>Status</th>
+                                    <th>UpdateBy</th>
+                                    <th>LastUpdate</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -115,6 +117,7 @@
             $(document).ready(function () {
                 _form.getUrl = '@Url.Action("GetDtPolesList")';
                 _form.delUrl = '@Url.Action("DeletePoles")';
+                _form.updatePoleUrl = '@Url.Action("UpdateDtPoles")';
                 _form.indexUrl = '@Url.Action("Index")';
                 _form.userId = @cUser.Id;
                 _form.init();

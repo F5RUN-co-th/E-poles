@@ -46,6 +46,7 @@ namespace E_poles.Controllers
             }).ToList();
             return View(model);
         }
+
         private async Task<IEnumerable<Poles>> GetAllPolesByGroupId(string userId)
         {
             var userGroups = await _groupService.GetGroupByUserId(int.Parse(userId));
@@ -59,10 +60,25 @@ namespace E_poles.Controllers
             var result = await GetAllPolesByGroupId(model.UserId);
 
             var poleList = _mapper.Map<IEnumerable<PoleListModel>>(result);
+            if (!String.IsNullOrEmpty(model.SelectedArea))
+            {
+                poleList = poleList.Where(s =>
+                                     (s.Area != null && s.Area.Contains(model.SelectedArea))
+                                    );
+            }
+            if (!String.IsNullOrEmpty(model.SelectedStreet))
+            {
+                poleList = poleList.Where(s =>
+                                    (s.Street != null && s.Street.Contains(model.SelectedStreet)));
+            }
+            if (!String.IsNullOrEmpty(model.SelectedStatus))
+            {
+                var _status = Convert.ToBoolean(int.Parse(model.SelectedStatus));
+                poleList = poleList.Where(w => w.Status == _status);
+            }
             if (!String.IsNullOrEmpty(model.KeySearch))
             {
                 poleList = poleList.Where(s =>
-                                    s.FullName.ToLower().Contains(model.KeySearch.ToLower()) ||
                                     (s.Name != null && s.Name.ToLower().Contains(model.KeySearch.ToLower())) ||
                                     (s.Area != null && s.Area.Contains(model.KeySearch)) ||
                                     (s.Street != null && s.Street.Contains(model.KeySearch)) ||
@@ -70,22 +86,7 @@ namespace E_poles.Controllers
                                     (s.Description != null && s.Description.ToLower().Contains(model.KeySearch.ToLower()))
                                     );
             }
-            if (!String.IsNullOrEmpty(model.SelectedArea))
-            {
-                poleList = poleList.Where(s =>
-                                     (s.Area != null && s.Area.Contains(model.KeySearch))
-                                    );
-            }
-            if (!String.IsNullOrEmpty(model.SelectedStreet))
-            {
-                poleList = poleList.Where(s =>
-                                    (s.Street != null && s.Street.Contains(model.KeySearch)));
-            }
-            if (!String.IsNullOrEmpty(model.SelectedStatus))
-            {
-                var _status = Convert.ToBoolean(int.Parse(model.SelectedStatus));
-                poleList = poleList.Where(w => w.Status == _status);
-            }
+
             int recordsTotal = poleList.Count();
             var data = poleList.Skip(model.Start).Take(model.Length);
             var jsonData = new { draw = model.Draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };

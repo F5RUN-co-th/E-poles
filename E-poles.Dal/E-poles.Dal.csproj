@@ -42,6 +42,14 @@
 	  <Compile Remove="Migrations\20220219210418_Initialize.Designer.cs" />
 	  <Compile Remove="Migrations\20220222022827_Initialize.cs" />
 	  <Compile Remove="Migrations\20220222022827_Initialize.Designer.cs" />
+	  <Compile Remove="Migrations\20220411103321_NewPolesModel.cs" />
+	  <Compile Remove="Migrations\20220411103321_NewPolesModel.Designer.cs" />
+	  <Compile Remove="Migrations\20220411104109_updateby_updateat.cs" />
+	  <Compile Remove="Migrations\20220411104109_updateby_updateat.Designer.cs" />
+	  <Compile Remove="Migrations\20220411104809_updateby_updateat.cs" />
+	  <Compile Remove="Migrations\20220411104809_updateby_updateat.Designer.cs" />
+	  <Compile Remove="Migrations\20220411123458_updateby_updateat.cs" />
+	  <Compile Remove="Migrations\20220411123458_updateby_updateat.Designer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -376,7 +376,10 @@ var EPoles = function () {
 
                     me.txtLatitude.val(ol.proj.toLonLat(feature.getGeometry().getCoordinates())[1]);
                     me.txtLongitude.val(ol.proj.toLonLat(feature.getGeometry().getCoordinates())[0]);
-
+                    $.get(me.lastareaUrl, function (data) {
+                        me.txtStreet.val(data[0].street);
+                        me.txtArea.val(data[0].area);
+                    });
                     me.overlay2.setPosition(coordinate);
                     me.doDrawEnd = true;
                 });
